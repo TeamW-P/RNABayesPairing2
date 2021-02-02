@@ -1,0 +1,26 @@
+name: bayespairing
+channels:
+  - anaconda
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - pip=20.2.2
+  - numpy=1.19
+  - numpy-base=1.19
+  - pillow=7.2
+  - pip:
+    - networkx
+    - matplotlib
+    - seaborn
+    - weblogo
+    - ghostscript
+    - biopython
+    - wrapt
+    - anytree
+    - treedecomp
+  - viennarna=2.4.17
+  - gunicorn=20.0.4
+  - flask=1.1.2
+
