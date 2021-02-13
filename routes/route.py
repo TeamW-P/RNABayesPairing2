@@ -7,8 +7,6 @@ import os
 def resource_not_found(e):
     return jsonify(error=str(e)), 400
 
-@app.route('/<int:year>/<int:month>/<title>')
-
 @routes.route('/<string:sequence>/<string:secondary_structure>/<int:score_threshold>', methods=['GET'])
 def one_adder(sequence, secondary_structure, score_threshold):
     try:
