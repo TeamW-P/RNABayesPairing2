@@ -1,14 +1,15 @@
-from flask import jsonify, abort, Blueprint
-from core.src import parse_sequences
 import pickle
 import os
+from flask import jsonify, abort, Blueprint
+from core.src import parse_sequences
+from . import routes
 
 @routes.errorhandler(400)
 def resource_not_found(e):
     return jsonify(error=str(e)), 400
 
 @routes.route('/<string:sequence>/<string:secondary_structure>/<int:score_threshold>', methods=['GET'])
-def one_adder(sequence, secondary_structure, score_threshold):
+def bayespairing(sequence, secondary_structure, score_threshold):
     try:
         arguments = {}
 
