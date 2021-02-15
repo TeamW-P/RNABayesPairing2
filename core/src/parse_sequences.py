@@ -1,8 +1,8 @@
 import os
 import pickle
 from multiprocessing import Process, Manager
-import testSS
-import BayesPairing
+from . import testSS
+from . import BayesPairing
 import random
 from Bio import SeqIO
 import argparse
@@ -12,10 +12,14 @@ from functools import reduce
 from Bio import AlignIO
 import os.path
 from operator import itemgetter
+import sys
+
+directory_name = os.path.dirname(__file__)
 
 def unpick(dataset,direc,typ):
-    file_path = "../"+direc+"/" + dataset + "_"+typ
+    file_path = os.path.join(directory_name, "../"+direc+"/" + dataset + "_"+typ)
     if os.path.exists(file_path):
+        print("Dataset found!", file=sys.stderr)
         while True:
             try:
                 nets = pickle.load(open(file_path, "rb"))
@@ -24,11 +28,12 @@ def unpick(dataset,direc,typ):
                 pass
         return nets
     else:
-        print("Dataset not found!")
+        print("Dataset not found!", file=sys.stderr)
         return None
 
 def run_BP(seq, ss, modules_to_parse, dataset, left_out, aln=False, t=-5, samplesize=20000, pretrained=False, Lambda=0.35, Theta=1,Delta=None, leave_out_sequence=False,left_out_sequence="",fuzzy=False,verbose=False, first_run=False, constraints = '',indexes=[]):
-    if not (os.path.isfile("../models/" + dataset + "_models.pickle" )) or left_out!="NONE":
+    file_path = os.path.join(directory_name, "../models/" + dataset + "_models.pickle")
+    if not (os.path.isfile(file_path)) or left_out!="NONE":
         if verbose:
             print("running cross-validation")
         nets = collections.OrderedDict()
@@ -42,7 +47,7 @@ def run_BP(seq, ss, modules_to_parse, dataset, left_out, aln=False, t=-5, sample
             nets = collections.OrderedDict()
         #print("SETTING UP BAYES NET")
         BNs = BayesPairing.setup_BN(modules_to_parse, nets, dataset, left_out,leave_out_sequence=leave_out_sequence,left_out_sequence=left_out_sequence, Lambda=Lambda,Theta=Theta, verbose=verbose,indexes=indexes)
-        pickle.dump(BNs,open("../models/" + dataset + "_models.pickle", "wb"))
+        pickle.dump(BNs,open(os.path.join(directory_name, "../models/" + dataset + "_models.pickle"), "wb"))
     else:
         #nets = pickle.load(open("../models/" + dataset + "_models.pickle", "rb"))
         nets = unpick(dataset,"models","models.pickle")
@@ -293,7 +298,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             fOUTPUT = fOUTPUT + present_output(prediction_scores[id], t)
         stats = get_stats(prediction_scores, modules_to_parse, t)
         fOUTPUT = fOUTPUT + "\n" + stats
-        pickle.dump(prediction_scores, open("../output/" + o + ".pickle", "wb"))
+        pickle.dump(prediction_scores, open(os.path.join(directory_name, "../output/" + o + ".pickle"), "wb"))
 
 
     
@@ -366,7 +371,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             fOUTPUT = fOUTPUT + present_output(prediction_scores[id], t)
         stats = get_stats(prediction_scores, modules_to_parse, t)
         fOUTPUT = fOUTPUT + "\n" + stats
-        pickle.dump(prediction_scores, open("../output/" + o + ".pickle", "wb"))
+        pickle.dump(prediction_scores, open(os.path.join(directory_name, "../output/" + o + ".pickle"), "wb"))
 
 
     elif ".fa" in input.lower() and ss=="":
@@ -421,7 +426,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             fOUTPUT=fOUTPUT+present_output(prediction_scores[id], t)
         stats=get_stats(prediction_scores,modules_to_parse,t)
         fOUTPUT= fOUTPUT+"\n"+stats
-        pickle.dump(prediction_scores,open("../output/"+o+".pickle","wb"))
+        pickle.dump(prediction_scores,open(os.path.join(directory_name, "../output/"+o+".pickle"),"wb"))
 
     elif "fa" in input.lower() and ss=="infile":
         if verbose:
@@ -474,7 +479,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             fOUTPUT=fOUTPUT+present_output(prediction_scores[id], t)+"\n"
         stats=get_stats(prediction_scores,modules_to_parse,t)
         fOUTPUT= fOUTPUT+"\n"+stats
-        pickle.dump(prediction_scores,open("../output/"+o+".pickle","wb"))
+        pickle.dump(prediction_scores,open(os.path.join(directory_name, "../output/"+o+".pickle"),"wb"))
 
     else:
         if verbose:
@@ -489,7 +494,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             if interm:
                 print(maxs)
             fOUTPUT=fOUTPUT+present_output([maxs], t)+"\n"
-            pickle.dump(maxs,open("../output/"+o+".pickle","wb"))
+            pickle.dump(maxs,open(os.path.join(directory_name, "../output/"+o+".pickle"),"wb"))
         else:
             all_maxes = []
             index = 0
@@ -518,7 +523,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             all_maxes.append(maxs)
 
             fOUTPUT=fOUTPUT+present_output(all_maxes, t)+"\n"
-            pickle.dump(all_maxes,open("../output/"+o+".pickle","wb"))
+            pickle.dump(all_maxes,open(os.path.join(directory_name, "../output/"+o+".pickle"),"wb"))
     return fOUTPUT,sequences
 
 

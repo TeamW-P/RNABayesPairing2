@@ -5,10 +5,10 @@ from collections import defaultdict
 import networkx as nx
 import numpy as np
 
-from pgmpy.base import UndirectedGraph
-from pgmpy.factors.discrete import factor_product, DiscreteFactor
-from pgmpy.independencies import Independencies
-from pgmpy.extern.six.moves import map, range, zip
+from ..base import UndirectedGraph
+from ..factors.discrete import factor_product, DiscreteFactor
+from ..independencies import Independencies
+from ..extern.six.moves import map, range, zip
 
 
 class MarkovModel(UndirectedGraph):

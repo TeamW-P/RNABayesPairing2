@@ -6,10 +6,10 @@ import numpy as np
 from pandas import DataFrame
 from scipy.linalg import eig
 
-from pgmpy.factors.discrete import State
-from pgmpy.utils import sample_discrete
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range, zip
+from ..factors.discrete import State
+from ..utils import sample_discrete
+from ..extern import six
+from ..extern.six.moves import range, zip
 
 
 class MarkovChain(object):

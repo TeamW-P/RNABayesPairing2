@@ -1,6 +1,6 @@
 import pickle
 from BayesPairing import jared
-import make_BN_from_carnaval as makeBN
+from . import make_BN_from_carnaval as makeBN
 import statistics
 import sys
 import ast

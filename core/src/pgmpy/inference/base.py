@@ -3,13 +3,13 @@
 from collections import defaultdict
 from itertools import chain
 
-from pgmpy.models import BayesianModel
-from pgmpy.models import RNAModule
-from pgmpy.models import MarkovModel
-from pgmpy.models import FactorGraph
-from pgmpy.models import JunctionTree
-from pgmpy.models import DynamicBayesianNetwork
-from pgmpy.utils import StateNameInit
+from ..models import BayesianModel
+from ..modelsimport RNAModule
+from ..models import MarkovModel
+from ..models import FactorGraph
+from ..models import JunctionTree
+from ..models import DynamicBayesianNetwork
+from ..utils import StateNameInit
 
 
 class Inference(object):

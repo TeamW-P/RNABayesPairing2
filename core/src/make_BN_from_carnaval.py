@@ -2,12 +2,14 @@ import os
 import sys
 import pickle
 from collections import OrderedDict as od
-from pgmpy.models import RNAModule
+from .pgmpy.models import RNAModule
 from Bio import SeqIO
-import BN_builder
+from . import BN_builder
 import networkx as nx
 import subprocess
 from matplotlib import pyplot as plt
+
+directory_name = os.path.dirname(__file__)
 
 USE_RFAM_SEQS=True
 
@@ -249,8 +251,8 @@ def call_makeBN(mod,dataset,left_out, leave_out_seq = False, left_out_seq = "", 
     ok_indexes = []
     current_ID = mod
     excluded = left_out
-    g_list = pickle.load(open("../models/"+dataset + "_one_of_each_graph.cPickle",'rb'))
-    seq_list = pickle.load(open("../models/"+dataset + "_sequences.pickle",'rb'))
+    g_list = pickle.load(open(os.path.join(directory_name, "../models/"+dataset + "_one_of_each_graph.cPickle"),'rb'))
+    seq_list = pickle.load(open(os.path.join(directory_name, "../models/"+dataset + "_sequences.pickle"),'rb'))
     try:
         motif_seqs  = seq_list[0][mod]
     except:
@@ -264,8 +266,8 @@ def call_makeBN(mod,dataset,left_out, leave_out_seq = False, left_out_seq = "", 
     test_seqs = []
     g = g_list[current_ID][0]
     if excluded == "NONE":
-        if(os.path.isfile("../models/" + dataset + "_models.pickle" )) and retrain==False:
-            nets = pickle.load(open("../models/" + dataset + "_models.pickle", "rb"))
+        if(os.path.isfile(os.path.join(directory_name, "../models/" + dataset + "_models.pickle" ))) and retrain==False:
+            nets = pickle.load(open(os.path.join(directory_name, "../models/" + dataset + "_models.pickle"), "rb"))
             if mod in nets:
                 return nets[mod]
             else:
@@ -276,7 +278,7 @@ def call_makeBN(mod,dataset,left_out, leave_out_seq = False, left_out_seq = "", 
             
         else:
             try:
-                existing_models  = pickle.load(open("../models/"+dataset + "_models.pickle",'rb'))
+                existing_models  = pickle.load(open(os.path.join(directory_name, "../models/"+dataset + "_models.pickle"),'rb'))
             except:
                 existing_models = {}
             if current_ID in existing_models:
@@ -296,7 +298,7 @@ def call_makeBN(mod,dataset,left_out, leave_out_seq = False, left_out_seq = "", 
         if len(indexes)<2:
             indexes = list(range(len(g_list)))
         try:
-            test_seqs  = pickle.load(open("../models/"+dataset + "_sequences.pickle",'rb'))[1][mod]
+            test_seqs  = pickle.load(open(os.path.join(directory_name, "../models/"+dataset + "_sequences.pickle"),'rb'))[1][mod]
         except:
             test_seqs = []
         

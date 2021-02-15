@@ -4,8 +4,8 @@ from __future__ import division
 
 import numpy as np
 
-from pgmpy.factors.distributions import BaseDistribution
-from pgmpy.factors.distributions import GaussianDistribution
+from ..distributions import BaseDistribution
+from ..distributions import GaussianDistribution
 
 
 class CanonicalDistribution(BaseDistribution):

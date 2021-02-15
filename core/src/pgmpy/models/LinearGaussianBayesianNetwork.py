@@ -3,9 +3,9 @@ from __future__ import division
 import numpy as np
 import networkx as nx
 
-from pgmpy.models import BayesianModel
-from pgmpy.factors.continuous import LinearGaussianCPD
-from pgmpy.factors.distributions import GaussianDistribution
+from . import BayesianModel
+from ..factors.continuous import LinearGaussianCPD
+from ..factors.distributions import GaussianDistribution
 
 
 class LinearGaussianBayesianNetwork(BayesianModel):

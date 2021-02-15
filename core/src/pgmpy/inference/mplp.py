@@ -5,10 +5,10 @@ import itertools as it
 import numpy as np
 import networkx as nx
 
-from pgmpy.extern.six.moves import filter, range
-from pgmpy.inference import Inference
-from pgmpy.models import MarkovModel
-from pgmpy.factors.discrete import DiscreteFactor
+from ..extern.six.moves import filter, range
+from . import Inference
+from ..models import MarkovModel
+from ..factors.discrete import DiscreteFactor
 
 
 class Mplp(Inference):

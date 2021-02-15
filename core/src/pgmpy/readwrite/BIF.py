@@ -5,9 +5,9 @@ import numpy
 from pyparsing import Word, alphanums, Suppress, Optional, CharsNotIn, Group, nums, ZeroOrMore, OneOrMore,\
     cppStyleComment, printables
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.extern.six.moves import map, range
+from . import BayesianModel
+from ..factors.discrete import TabularCPD
+from ..extern.six.moves import map, range
 
 
 class BIFReader(object):

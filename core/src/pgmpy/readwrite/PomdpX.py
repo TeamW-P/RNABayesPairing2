@@ -4,8 +4,8 @@ from collections import defaultdict
 
 import warnings
 
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range
+from ..extern import six
+from ..extern.six.moves import range
 
 try:
     from lxml import etree

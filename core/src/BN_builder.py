@@ -2,10 +2,10 @@ __author__ = 'Roman'
 import itertools
 import matplotlib.pyplot as plt
 import networkx as nx
-import pgmpy
-from pgmpy.models import BayesianModel
-from pgmpy.models import RNAModule
-from module_td import tree_decomposition
+from . import pgmpy
+from .pgmpy.models import BayesianModel
+from .pgmpy.models import RNAModule
+from .module_td import tree_decomposition
 
 
 def get_cons_seq_from_column(col, aln):

@@ -3,10 +3,10 @@
 from warnings import warn
 from itertools import combinations
 
-from pgmpy.base import UndirectedGraph
-from pgmpy.models import BayesianModel
-from pgmpy.estimators import StructureEstimator
-from pgmpy.independencies import Independencies, IndependenceAssertion
+from ..base import UndirectedGraph
+from ..models import BayesianModel
+from . import StructureEstimator
+from ..independencies import Independencies, IndependenceAssertion
 
 
 class ConstraintBasedEstimator(StructureEstimator):

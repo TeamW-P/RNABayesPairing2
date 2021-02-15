@@ -2,9 +2,9 @@
 
 import numpy as np
 
-from pgmpy.estimators import ParameterEstimator
-from pgmpy.factors.discrete import TabularCPD
-from pgmpy.models import BayesianModel
+from . import ParameterEstimator
+from ..factors.discrete import TabularCPD
+from ..models import BayesianModel
 
 
 class MaximumLikelihoodEstimator(ParameterEstimator):

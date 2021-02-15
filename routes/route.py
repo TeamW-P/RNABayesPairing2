@@ -2,7 +2,11 @@ import pickle
 import os
 from flask import jsonify, abort, Blueprint
 from core.src import parse_sequences
-from . import routes
+import sys
+import os
+
+routes = Blueprint('routes', __name__)
+current_directory = os.path.dirname(__file__)
 
 @routes.errorhandler(400)
 def resource_not_found(e):
@@ -26,7 +30,18 @@ def bayespairing(sequence, secondary_structure, score_threshold):
 
         # we load the modules from the dataset to get the number of modules available.
         #graphs = pickle.load(open("../models/" + dataset + "_one_of_each_graph.cPickle", "rb"))
-        graphs = parse_sequences.unpick(dataset,"models","one_of_each_graph.cPickle")
+        file_path = os.path.join(current_directory, "../core/models/" + dataset + "_one_of_each_graph.cPickle")
+        if os.path.exists(file_path):
+            while True:
+                try:
+                    nets = pickle.load(open(file_path, "rb"))
+                    break
+                except:
+                    abort(400, description='Could not process dataset.')
+            graphs = nets
+        else:
+            abort(400, description='The provided dataset does not appear to exist.')
+
         # needs to handle user input
         modules_to_check = range(len(graphs))
 
@@ -36,7 +51,8 @@ def bayespairing(sequence, secondary_structure, score_threshold):
     except ValueError:
         abort(400, description='Received an invalid argument.')
 
-    output = pickle.load( open( "./core/output/output.pickle", "rb"))
-    os.remove("./core/output/output.pickle")
+    outputLocation = os.path.join(current_directory, "../core/output/output.pickle")
+    output = pickle.load(open(outputLocation, "rb"))
+    os.remove(outputLocation)
 
     return jsonify({'result': output})

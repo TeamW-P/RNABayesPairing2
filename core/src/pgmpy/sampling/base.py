@@ -2,8 +2,8 @@ from warnings import warn
 
 import numpy as np
 
-from pgmpy import HAS_PANDAS
-from pgmpy.utils import _check_1d_array_object, _check_length_equal
+from .. import HAS_PANDAS
+from ..utils import _check_1d_array_object, _check_length_equal
 
 if HAS_PANDAS:
     import pandas

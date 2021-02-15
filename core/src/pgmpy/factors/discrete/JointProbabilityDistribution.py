@@ -3,10 +3,10 @@ from operator import mul
 
 import numpy as np
 
-from pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.independencies import Independencies
-from pgmpy.extern.six.moves import range, zip
-from pgmpy.extern import six
+from . import DiscreteFactor
+from ...independencies import Independencies
+from ...extern.six.moves import range, zip
+from ...extern import six
 
 
 class JointProbabilityDistribution(DiscreteFactor):

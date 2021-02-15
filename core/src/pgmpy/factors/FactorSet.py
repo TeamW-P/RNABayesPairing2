@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from pgmpy.extern.six.moves import filter, reduce
-from pgmpy.factors.base import BaseFactor
-from pgmpy.extern import six
+from ..extern.six.moves import filter, reduce
+from ..factors.base import BaseFactor
+from ..extern import six
 
 
 class FactorSet(object):

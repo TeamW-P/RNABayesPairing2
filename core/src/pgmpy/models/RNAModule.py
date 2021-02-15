@@ -9,23 +9,23 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 
-from pgmpy.base import DirectedGraph
-from pgmpy.factors.discrete import TabularCPD, JointProbabilityDistribution, DiscreteFactor
-from pgmpy.independencies import Independencies
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range, reduce
-from pgmpy.models.MarkovModel import MarkovModel
-from pgmpy.models import BayesianModel
+from ..base import DirectedGraph
+from ..factors.discrete import TabularCPD, JointProbabilityDistribution, DiscreteFactor
+from ..independencies import Independencies
+from ..extern import six
+from ..extern.six.moves import range, reduce
+from .MarkovModel import MarkovModel
+from . import BayesianModel
 import matplotlib
 import matplotlib.patches as mpatches
 import networkx as nx
 from matplotlib import pyplot as plt
 from collections import namedtuple
 import math
-import testSS
+from ... import testSS
 
 
-from folding import Fold
+from ...folding import Fold
 
 #Lambda = 0.2
 BasePair = namedtuple('BasePair', ('fst','snd'))

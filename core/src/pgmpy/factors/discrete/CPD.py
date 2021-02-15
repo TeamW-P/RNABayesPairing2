@@ -8,12 +8,12 @@ import numbers
 
 import numpy as np
 
-from pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.extern import tabulate
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range, zip
-from pgmpy.utils import StateNameInit
-from pgmpy.utils import StateNameDecorator
+from . import DiscreteFactor
+from ...extern import tabulate
+from ...extern import six
+from ...extern.six.moves import range, zip
+from ...utils import StateNameInit
+from ...utils import StateNameDecorator
 
 
 class TabularCPD(DiscreteFactor):

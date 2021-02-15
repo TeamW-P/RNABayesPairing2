@@ -2,7 +2,7 @@
 
 import networkx as nx
 
-from pgmpy.models import ClusterGraph
+from . import ClusterGraph
 
 
 class JunctionTree(ClusterGraph):

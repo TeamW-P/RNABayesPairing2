@@ -2,7 +2,7 @@
 
 from math import log
 
-from pgmpy.estimators import StructureScore
+from . import StructureScore
 
 
 class BicScore(StructureScore):

@@ -1,10 +1,10 @@
 import os
 import pickle
-import BayesPairing
+from . import BayesPairing
 import random
 from Bio import SeqIO
 from random import shuffle
-import parse_sequences
+from . import parse_sequences
 import random
 DATASET_NAME = "bp2june2"
 

@@ -5,7 +5,7 @@ from __future__ import division
 import numpy as np
 from scipy.stats import multivariate_normal
 
-from pgmpy.factors.base import BaseFactor
+from ..base import BaseFactor
 
 
 class LinearGaussianCPD(BaseFactor):

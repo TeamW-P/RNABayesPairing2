@@ -1,9 +1,9 @@
 from collections import defaultdict
 from itertools import tee, chain, combinations
 
-from pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.factors.discrete import factor_product
-from pgmpy.inference import Inference, BeliefPropagation
+from ..factors.discrete import DiscreteFactor
+from ..factors.discrete import factor_product
+from ..inference import Inference, BeliefPropagation
 
 
 class DBNInference(Inference):
