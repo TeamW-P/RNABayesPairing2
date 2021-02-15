@@ -23,7 +23,7 @@ def bayespairing():
             abort(400, description='Did not receive a sequence as an argument.')
   
         secondary_structure = request.args.get("secondary_structure", default="", type = str)
-        secondary_structure_infile = request.args.get("secondary_structure_infile", default = False, type=bool)
+        secondary_structure_infile = request.args.get("secondary_structure_infile", default = 0, type=int)
 
         # a secondary structure can be provided via a fasta file. This means a string cannot be provided, so verify that only one was received
         if (secondary_structure_infile and secondary_structure != ""):
@@ -43,7 +43,7 @@ def bayespairing():
         arguments["s"] = request.args.get("step_size", default=100, type = int)
         arguments["mod"] = request.args.get("modules", default="", type = str)
         arguments["constraints"] = request.args.get("constraints", default="", type = str)
-        arguments["aln"] = request.args.get("alignment_provided", default=False, type = bool)
+        arguments["aln"] = request.args.get("alignment_provided", default=0, type = int)
 
         # we load the modules from the dataset to get the number of modules available.
         #graphs = pickle.load(open("../models/" + dataset + "_one_of_each_graph.cPickle", "rb"))
