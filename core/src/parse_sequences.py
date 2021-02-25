@@ -152,6 +152,8 @@ def get_stats(prediction_scores,modules_to_parse,threshold=-5):
 def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
     fOUTPUT = ""
 
+    if not os.path.exists(os.path.join(directory_name, '../output')):
+        os.makedirs(os.path.join(directory_name, '../output'))
 
     if "aln" in arguments:
         aln = arguments["aln"]
