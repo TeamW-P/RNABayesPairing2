@@ -12,9 +12,9 @@ import networkx as nx
 import seaborn as sns
 #sns.set_style("white")
 
-PATH_GRAPHS = '../Graphs'
 USE_RFAM=False
-
+directory_name = os.path.dirname(__file__)
+PATH_GRAPHS = os.path.join(directory_name, '../Graphs')
 
 def plot_module(graphs,name,latex=False):
     if latex==True:
@@ -117,7 +117,7 @@ def plot_module(graphs,name,latex=False):
             SP = mpatches.Patch(color="red", label="Stacking")
             #plt.legend(handles=[NCP,CP,BP,SP],prop={'size': 16})
             #plt.show()
-            plt.savefig("../Graphs/"+name+"_graph"+str(m)+".png",format="png")
+            plt.savefig(os.path.join(directory_name, "../Graphs/"+name+"_graph"+str(m)+".png"),format="png")
     else:
         print('plotting without latex; for optimal results use latex')
         matplotlib.rcParams['text.usetex'] = False
@@ -215,7 +215,7 @@ def plot_module(graphs,name,latex=False):
             SP = mpatches.Patch(color="red", label="Stacking")
             # plt.legend(handles=[NCP,CP,BP,SP],prop={'size': 16})
             #plt.show()
-            plt.savefig("../Graphs/" + name + "_graph" + str(m) + ".png", format="png")
+            plt.savefig(os.path.join(PATH_GRAPHS, name + "_graph" + str(m) + ".png"), format="png")
             plt.clf()
 
 """
@@ -249,15 +249,15 @@ def logo_module(aln,name):
         #os.remove("../test/seq" + str(i) + ".txt")
 """
 def logo_module(name):
-    seqs = pickle.load(open("../models/"+name + "_sequences.pickle",'rb'))[0]
+    seqs = pickle.load(open(os.path.join(directory_name, "../models/"+name + "_sequences.pickle"),'rb'))[0]
     for i,all_seqs in enumerate(seqs):
-        with(open("../test/seq"+str(i)+".txt", "w")) as f:
+        with(open(os.path.join(directory_name,"../test/seq"+str(i)+".txt"), "w")) as f:
             for seq in all_seqs:
                 if "-" not in seq :
                     f.write(seq)
                     f.write("\n")
     
-        make_logo.make_logo("../test/seq"+str(i)+".txt", "../Graphs/"+name+"_logo"+str(i))
+        make_logo.make_logo(os.path.join(directory_name, "../test/seq"+str(i)+".txt"), os.path.join(PATH_GRAPHS, name+"_logo"+str(i)))
 
 #deprecated, need to update
 def tikz_module(data,name):
@@ -266,14 +266,14 @@ def tikz_module(data,name):
     print(len(data))
     data = ncDraw.remove_already_there(data, PATH_GRAPHS)
     lb, ub = 0, len(data)
-    tot = sum(1 for x in os.listdir('../Graphs') if (not x.startswith('.') and x.endswith('nxpickle')))
+    tot = sum(1 for x in os.listdir(os.path.join(directory_name, '../Graphs')) if (not x.startswith('.') and x.endswith('nxpickle')))
 
     # lb,ub = 1,5
     for i in range(lb, ub):
         g = data[i]
         i += tot
         #        print "NCM",(i+1)
-        nx.write_gpickle(g, os.path.join(PATH_GRAPHS, name+'_module-%s.nxpickle' % (i)))
+        nx.write_gpickle(g, PATH_GRAPHS + '/' + name+'_module-%s.nxpickle' % (i))
         print('preparing for strands')
         strands = ncDraw.buildStrands(g)
         print('ordering strands')
@@ -298,7 +298,7 @@ if __name__ == "__main__":
         latex=True
     else:
         latex=False
-    aln = pickle.load(open("../models/"+model_name+"_one_of_each_graph.cPickle","rb"))
+    aln = pickle.load(open(os.path.join(directory_name, "../models/"+model_name+"_one_of_each_graph.cPickle"),"rb"))
     #for i in aln[0]:
     #   print(len(list(i.nodes)))
 
