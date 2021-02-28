@@ -13,8 +13,8 @@ import seaborn as sns
 #sns.set_style("white")
 
 USE_RFAM=False
-directory_name = os.path.dirname(__file__)
-PATH_GRAPHS = os.path.join(directory_name, '../Graphs')
+CURRENT_DIRECTORY = os.path.dirname(__file__)
+GRAPHS_DIRECTORY = os.path.join(CURRENT_DIRECTORY, '../Graphs')
 
 def plot_module(graphs,name,latex=False):
     if latex==True:
@@ -117,7 +117,7 @@ def plot_module(graphs,name,latex=False):
             SP = mpatches.Patch(color="red", label="Stacking")
             #plt.legend(handles=[NCP,CP,BP,SP],prop={'size': 16})
             #plt.show()
-            plt.savefig(os.path.join(directory_name, "../Graphs/"+name+"_graph"+str(m)+".png"),format="png")
+            plt.savefig(os.path.join(CURRENT_DIRECTORY, "../Graphs/"+name+"_graph"+str(m)+".png"),format="png")
     else:
         print('plotting without latex; for optimal results use latex')
         matplotlib.rcParams['text.usetex'] = False
@@ -215,7 +215,7 @@ def plot_module(graphs,name,latex=False):
             SP = mpatches.Patch(color="red", label="Stacking")
             # plt.legend(handles=[NCP,CP,BP,SP],prop={'size': 16})
             #plt.show()
-            plt.savefig(os.path.join(PATH_GRAPHS, name + "_graph" + str(m) + ".png"), format="png")
+            plt.savefig(os.path.join(GRAPHS_DIRECTORY, name + "_graph" + str(m) + ".png"), format="png")
             plt.clf()
 
 """
@@ -249,31 +249,31 @@ def logo_module(aln,name):
         #os.remove("../test/seq" + str(i) + ".txt")
 """
 def logo_module(name):
-    seqs = pickle.load(open(os.path.join(directory_name, "../models/"+name + "_sequences.pickle"),'rb'))[0]
+    seqs = pickle.load(open(os.path.join(CURRENT_DIRECTORY, "../models/"+name + "_sequences.pickle"),'rb'))[0]
     for i,all_seqs in enumerate(seqs):
-        with(open(os.path.join(directory_name,"../test/seq"+str(i)+".txt"), "w")) as f:
+        with(open(os.path.join(CURRENT_DIRECTORY,"../test/seq"+str(i)+".txt"), "w")) as f:
             for seq in all_seqs:
                 if "-" not in seq :
                     f.write(seq)
                     f.write("\n")
     
-        make_logo.make_logo(os.path.join(directory_name, "../test/seq"+str(i)+".txt"), os.path.join(PATH_GRAPHS, name+"_logo"+str(i)))
+        make_logo.make_logo(os.path.join(CURRENT_DIRECTORY, "../test/seq"+str(i)+".txt"), os.path.join(GRAPHS_DIRECTORY, name+"_logo"+str(i)))
 
 #deprecated, need to update
 def tikz_module(data,name):
     data = [x[0] for x in data]
     print("LEN DATA")
     print(len(data))
-    data = ncDraw.remove_already_there(data, PATH_GRAPHS)
+    data = ncDraw.remove_already_there(data, GRAPHS_DIRECTORY)
     lb, ub = 0, len(data)
-    tot = sum(1 for x in os.listdir(os.path.join(directory_name, '../Graphs')) if (not x.startswith('.') and x.endswith('nxpickle')))
+    tot = sum(1 for x in os.listdir(os.path.join(CURRENT_DIRECTORY, '../Graphs')) if (not x.startswith('.') and x.endswith('nxpickle')))
 
     # lb,ub = 1,5
     for i in range(lb, ub):
         g = data[i]
         i += tot
         #        print "NCM",(i+1)
-        nx.write_gpickle(g, PATH_GRAPHS + '/' + name+'_module-%s.nxpickle' % (i))
+        nx.write_gpickle(g, GRAPHS_DIRECTORY + '/' + name+'_module-%s.nxpickle' % (i))
         print('preparing for strands')
         strands = ncDraw.buildStrands(g)
         print('ordering strands')
@@ -298,12 +298,12 @@ if __name__ == "__main__":
         latex=True
     else:
         latex=False
-    aln = pickle.load(open(os.path.join(directory_name, "../models/"+model_name+"_one_of_each_graph.cPickle"),"rb"))
+    aln = pickle.load(open(os.path.join(CURRENT_DIRECTORY, "../models/"+model_name+"_one_of_each_graph.cPickle"),"rb"))
     #for i in aln[0]:
     #   print(len(list(i.nodes)))
 
-    if not os.path.exists(PATH_GRAPHS):
-        os.makedirs(PATH_GRAPHS)
+    if not os.path.exists(GRAPHS_DIRECTORY):
+        os.makedirs(GRAPHS_DIRECTORY)
 
     logo_module(model_name)
 

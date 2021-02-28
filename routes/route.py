@@ -6,7 +6,7 @@ import sys
 import os
 
 routes = Blueprint('routes', __name__)
-current_directory = os.path.dirname(__file__)
+CURRENT_DIRECTORY = os.path.dirname(__file__)
 
 @routes.errorhandler(400)
 def resource_not_found(e):
@@ -30,7 +30,7 @@ def bayespairing(sequence, secondary_structure, score_threshold):
 
         # we load the modules from the dataset to get the number of modules available.
         #graphs = pickle.load(open("../models/" + dataset + "_one_of_each_graph.cPickle", "rb"))
-        file_path = os.path.join(current_directory, "../core/models/" + dataset + "_one_of_each_graph.cPickle")
+        file_path = os.path.join(CURRENT_DIRECTORY, "../core/models/" + dataset + "_one_of_each_graph.cPickle")
         if os.path.exists(file_path):
             while True:
                 try:
@@ -51,7 +51,7 @@ def bayespairing(sequence, secondary_structure, score_threshold):
     except ValueError:
         abort(400, description='Received an invalid argument.')
 
-    outputLocation = os.path.join(current_directory, "../core/output/output.pickle")
+    outputLocation = os.path.join(CURRENT_DIRECTORY, "../core/output/output.pickle")
     output = pickle.load(open(outputLocation, "rb"))
     os.remove(outputLocation)
 
