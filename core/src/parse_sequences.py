@@ -15,6 +15,7 @@ from operator import itemgetter
 import sys
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
+INPUT_DIRECTORY = os.path.join(CURRENT_DIRECTORY, "../input")
 
 def unpick(dataset,direc,typ):
     file_path = os.path.join(CURRENT_DIRECTORY, "../"+direc+"/" + dataset + "_"+typ)
@@ -237,7 +238,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "r") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "r") as f:
             for num, record in enumerate(SeqIO.parse(f, "stockholm")):
                 if verbose:
                     print("scanning record", record.id)
@@ -309,7 +310,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "r") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "r") as f:
             for num, record in enumerate(SeqIO.parse(f, "fasta")):
                 if verbose:
                     print("scanning record", record.id)
@@ -381,7 +382,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             print("FASTA file detected, scanning", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "rU") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "rU") as f:
             for num, record in enumerate(SeqIO.parse(f, "fasta")):
                 id = record.id
                 seq = str(record.seq)
@@ -435,7 +436,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             print("FASTA file file with secondary structure detected, scanning", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "rU") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "rU") as f:
             lines = f.readlines()
             for line_n in range(0, len(lines), 3):
                 id = lines[line_n].strip(">").strip("\n")
