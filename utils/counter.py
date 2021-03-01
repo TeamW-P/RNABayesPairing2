@@ -21,12 +21,4 @@ class Counter(object):
             self.state_file.seek(0)
             self.state_file.write(str(self.value))
             return self.value
-    
-    def close_file(self):
-        '''
-        Resets the state of the counter.
-        '''
-        self.state_file.seek(0)
-        self.state_file.write(str(0))
-        self.state_file.close()
 

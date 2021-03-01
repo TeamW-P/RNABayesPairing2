@@ -1,17 +1,18 @@
 import pickle
 from flask import jsonify, abort, Blueprint, request, flash, request, redirect, url_for, current_app, send_from_directory
 from werkzeug.utils import secure_filename
-from core.src import parse_sequences
+from core.src import pipeline_bp as bp
 from utils import counter
-from networkx.readwrite import json_graph
 import networkx as nx
 import json
 import sys
 import os
 import threading
 import atexit
+
 routes = Blueprint("routes", __name__)
-atexit.register(exit)
+#TODO: exit handling
+#atexit.register(exit)
 counter = counter.Counter()
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
@@ -106,7 +107,10 @@ def get_graph_per_module():
         for module in modules:
             # TODO, add master graph representation
             graph = dataset[module][0]
-            module_graph_mapping[module] = nx.to_dict_of_dicts(graph)
+            graph_dict = {}
+            graph_dict["nodes"] = list(graph.nodes(data=True))
+            graph_dict["edges"] = list(graph.edges(data=True))
+            module_graph_mapping[module] = graph_dict
         
         return jsonify({"graphs": module_graph_mapping})
     except Exception as e:
@@ -177,41 +181,25 @@ def bayespairing(input):
             modules_to_check = range(len(graphs))
 
         # executes BayesPairing on the sequence
-        if (DEBUG_MODE):
-            print(parse_sequences.run_fasta(sequence, modules_to_check, dataset, secondary_structure, arguments)[0])
-        else:
-            parse_sequences.run_fasta(sequence, modules_to_check, dataset, secondary_structure, arguments)
+        output = bp.run_fasta(sequence, modules_to_check, dataset, secondary_structure, arguments)
+
+        if not output:
+            abort(400, description="BayesPairing failed to produce output. Please ensure sure all input variables are valid. If a fasta or stockholm file were provided, they were preserved.")           
+
+        input_path = os.path.join(CURRENT_DIRECTORY, "../core/input")
+        if (".fa" in sequence or "st" in sequence):
+            os.remove(os.path.join(input_path, sequence))
+
+        return jsonify({"result": output})
 
     except ValueError as e:
         abort(400, description="Received an invalid argument: " + str(e))
     except Exception as e:
-        abort(400, description="BayesPairing failed to produce a result: " + str(e))
+        abort(400, description="BayesPairing failed to produce a result: " + str(e))    
 
-    # TODO, return output directly instead of having a file
-    output_file = os.path.join(CURRENT_DIRECTORY, "../core/output/output.pickle")
-    # check whether BayesPairing successfully produced output
-    if not os.path.exists(output_file):
-        abort(400, description="BayesPairing failed to produce output. Please ensure sure all input variables are valid.")
-
-    output = pickle.load(open(output_file, "rb"))
-    os.remove(output_file)
-    
-    input_path = os.path.join(CURRENT_DIRECTORY, "../core/input")
-    if (".fa" in sequence or "st" in sequence):
-        os.remove(os.path.join(input_path, sequence))
-
-
-    return jsonify({"result": output})
-    
 def allowed_file(filename):
     '''
     Verifies that a file has the correct format.
     '''
     return "." in filename and \
            filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def exit():
-    '''
-    Handles shutdown in the event that the server terminates.
-    '''
-    counter.close_file()
