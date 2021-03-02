@@ -11,14 +11,24 @@ import time as timer
 import collections
 from functools import reduce
 from Bio import AlignIO
-import os.path
 from operator import itemgetter
-import sys
 
-CURRENT_DIRECTORY = os.path.dirname(__file__)
-INPUT_DIRECTORY = os.path.join(CURRENT_DIRECTORY, "../input")
+# this class is a modification of parse_sequences.py. It switches to direct outputs instead of saving files locally, 
+# and also accepts file input as an argument.
+# helper methods are still called from parse_sequences
 
-def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
+def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}, input_file_type = None):
+    '''
+    Runs BayesPairing given a set of arguments and a sequence or alignment.
+
+    :param input: a string sequence or the path to a fasta or stockholm file
+    :param modules_to_parse: a list of modules to parse
+    :param dataset: the name of the dataset to use
+    :param ss: a string secondary structure
+    :param arguments: a dictionary containing optional arguments to be used by BayesPairing
+    :param input_file_type: the type of input file given (fasta or stockholm)
+
+    '''
     if "aln" in arguments:
         aln = arguments["aln"]
     else:
@@ -89,19 +99,15 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
     else:
          constraints = ""
 
+    # not relevant within context of pipeline
+    first_run= False
 
-    if 'init' in arguments:
-        first_run=arguments["init"]
-    else:
-        first_run= False
-        
-        
-    if ".st" in input.lower():
+    if input_file_type == "st":
         if verbose:
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
         sequences = []
-        with open(os.path.join(INPUT_DIRECTORY, input), "r") as f:
+        with open(input, "r") as f:
             for num, record in enumerate(SeqIO.parse(f, "stockholm")):
                 if verbose:
                     print("scanning record", record.id)
@@ -158,17 +164,16 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                         cand[1] = [[k + bf for k in l] for l in cand[1]]
                 all_maxes.append(maxs)
                 prediction_scores[id] = all_maxes
-        # print("PREDICTION_SCORES",prediction_scores)
         return prediction_scores
 
 
     
-    elif ".fa" in input.lower() and aln:
+    elif (input_file_type == "fa" or input_file_type == "fasta") and aln:
         if verbose:
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
         sequences = []
-        with open(os.path.join(INPUT_DIRECTORY, input), "r") as f:
+        with open(input, "r") as f:
             for num, record in enumerate(SeqIO.parse(f, "fasta")):
                 if verbose:
                     print("scanning record", record.id)
@@ -229,12 +234,12 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
         return prediction_scores
 
 
-    elif ".fa" in input.lower() and ss=="":
+    elif (input_file_type == "fa" or input_file_type == "fasta") and ss=="":
         if verbose:
             print("FASTA file detected, scanning", input)
         prediction_scores = {}
         sequences = []
-        with open(os.path.join(INPUT_DIRECTORY, input), "rU") as f:
+        with open(input, "rU") as f:
             for num, record in enumerate(SeqIO.parse(f, "fasta")):
                 id = record.id
                 seq = str(record.seq)
@@ -275,15 +280,14 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                             cand[1] = [[k + bf for k in l] for l in cand[1]]
                     all_maxes.append(maxs)
                     prediction_scores[id] = all_maxes
-
         return prediction_scores
 
-    elif "fa" in input.lower() and ss=="infile":
+    elif (input_file_type == "fa" or input_file_type == "fasta") and ss=="infile":
         if verbose:
             print("FASTA file file with secondary structure detected, scanning", input)
         prediction_scores = {}
         sequences = []
-        with open(os.path.join(INPUT_DIRECTORY, input), "rU") as f:
+        with open(input, "rU") as f:
             lines = f.readlines()
             for line_n in range(0, len(lines), 3):
                 id = lines[line_n].strip(">").strip("\n")
