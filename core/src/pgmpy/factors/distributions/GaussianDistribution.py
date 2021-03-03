@@ -5,7 +5,7 @@ from __future__ import division
 import numpy as np
 from scipy.stats import multivariate_normal
 
-from pgmpy.factors.distributions import BaseDistribution
+from ..distributions import BaseDistribution
 
 
 class GaussianDistribution(BaseDistribution):

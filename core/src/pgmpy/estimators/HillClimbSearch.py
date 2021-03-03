@@ -3,8 +3,8 @@ from itertools import permutations
 
 import networkx as nx
 
-from pgmpy.estimators import StructureEstimator, K2Score
-from pgmpy.models import BayesianModel
+from . import StructureEstimator, K2Score
+from ..models import BayesianModel
 
 
 class HillClimbSearch(StructureEstimator):

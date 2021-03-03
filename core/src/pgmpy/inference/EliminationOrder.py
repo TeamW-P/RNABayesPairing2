@@ -3,7 +3,7 @@ from itertools import combinations
 
 import numpy as np
 
-from pgmpy.models import BayesianModel
+from ..models import BayesianModel
 
 
 class BaseEliminationOrder:

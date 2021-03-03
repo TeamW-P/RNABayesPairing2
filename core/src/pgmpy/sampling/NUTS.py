@@ -4,8 +4,8 @@ from __future__ import division
 
 import numpy as np
 
-from pgmpy.sampling import HamiltonianMCDA, LeapFrog, _return_samples
-from pgmpy.utils import _check_1d_array_object, _check_length_equal
+from ..sampling import HamiltonianMCDA, LeapFrog, _return_samples
+from ..utils import _check_1d_array_object, _check_length_equal
 
 
 class NoUTurnSampler(HamiltonianMCDA):

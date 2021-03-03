@@ -1,5 +1,5 @@
-from pgmpy.independencies import Independencies
-from pgmpy.models import BayesianModel
+from ..independencies import Independencies
+from . import BayesianModel
 
 
 class NaiveBayes(BayesianModel):

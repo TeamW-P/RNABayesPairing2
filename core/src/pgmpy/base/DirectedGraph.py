@@ -4,7 +4,7 @@ import itertools
 
 import networkx as nx
 
-from pgmpy.base import UndirectedGraph
+from . import UndirectedGraph
 
 
 class DirectedGraph(nx.DiGraph):

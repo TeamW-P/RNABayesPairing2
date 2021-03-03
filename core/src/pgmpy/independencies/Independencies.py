@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import itertools
-from pgmpy.extern import six
+from ..extern import six
 
 
 class Independencies(object):

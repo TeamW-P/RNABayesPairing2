@@ -3,9 +3,9 @@ from itertools import combinations
 import numpy as np
 from pyparsing import alphas, Combine, Literal, Optional, nums, Word
 
-from pgmpy.models import BayesianModel, MarkovModel
-from src.pgmpy.factors.discrete import TabularCPD, DiscreteFactor
-from pgmpy.extern.six.moves import map, range
+from ..models import BayesianModel, MarkovModel
+from ..factors.discrete import TabularCPD, DiscreteFactor
+from ..extern.six.moves import map, range
 
 
 class UAIReader(object):

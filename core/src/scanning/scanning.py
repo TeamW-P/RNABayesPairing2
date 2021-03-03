@@ -1,4 +1,4 @@
-from scanning.src.classes import SSE, ExactScanResult, FuzzyScanResult
+from .src.classes import SSE, ExactScanResult, FuzzyScanResult
 from anytree.iterators.preorderiter import PreOrderIter
 import itertools
 

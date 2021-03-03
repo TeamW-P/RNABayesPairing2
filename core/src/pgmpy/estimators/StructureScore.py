@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from pgmpy.estimators import BaseEstimator
+from . import BaseEstimator
 
 
 class StructureScore(BaseEstimator):

@@ -1,12 +1,12 @@
 import os
 import pickle
-import BayesPairing
+from . import BayesPairing
 import random
 from Bio import SeqIO
 from random import shuffle
-import parse_sequences
+from . import parse_sequences
 import random
-import testSS
+from . import testSS
 DATASET_NAME = "RFAM3dmotif2"
 graphs = pickle.load(open("../models/RFAM3dmotif2_one_of_each_graph.cPickle", "rb"))
 pdbs = pickle.load(open("../models/RFAM3dmotif2_PDB_names.cPickle", "rb"))

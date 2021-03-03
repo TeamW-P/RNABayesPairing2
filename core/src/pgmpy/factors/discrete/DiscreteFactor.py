@@ -5,11 +5,11 @@ from collections import namedtuple
 
 import numpy as np
 
-from pgmpy.factors.base import BaseFactor
-from pgmpy.extern import tabulate
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import map, range, reduce, zip
-from pgmpy.utils import StateNameInit, StateNameDecorator
+from ..base import BaseFactor
+from ...extern import tabulate
+from ...extern import six
+from ...extern.six.moves import map, range, reduce, zip
+from ...utils import StateNameInit, StateNameDecorator
 
 
 State = namedtuple('State', ['var', 'state'])

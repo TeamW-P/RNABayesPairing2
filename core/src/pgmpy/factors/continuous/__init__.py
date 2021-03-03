@@ -1,5 +1,5 @@
-from pgmpy.factors.distributions import CanonicalDistribution
-from pgmpy.factors.continuous import ContinuousFactor
+from ..distributions import CanonicalDistribution
+from ..continuous import ContinuousFactor
 from .LinearGaussianCPD import LinearGaussianCPD
 from .discretize import BaseDiscretizer, RoundingDiscretizer, UnbiasedDiscretizer
 

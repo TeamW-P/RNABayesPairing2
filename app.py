@@ -1,8 +1,8 @@
 from flask import Flask, jsonify
-from routes import *
+from routes import route
 
 app = Flask(__name__)
-app.register_blueprint(routes)
+app.register_blueprint(route.routes)
 
 @app.route('/', methods=['GET'])
 def hello():

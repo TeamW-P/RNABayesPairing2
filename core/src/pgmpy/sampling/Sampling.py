@@ -4,12 +4,12 @@ import itertools
 import networkx as nx
 import numpy as np
 
-from pgmpy.factors.discrete import factor_product
-from pgmpy.inference import Inference
-from pgmpy.models import BayesianModel, MarkovChain, MarkovModel, RNAModule
-from pgmpy.utils.mathext import sample_discrete
-from pgmpy.extern.six.moves import map, range
-from pgmpy.sampling import _return_samples
+from ..factors.discrete import factor_product
+from ..inference import Inference
+from ..models import BayesianModel, MarkovChain, MarkovModel, RNAModule
+from ..utils.mathext import sample_discrete
+from ..extern.six.moves import map, range
+from . import _return_samples
 
 
 State = namedtuple('State', ['var', 'state'])

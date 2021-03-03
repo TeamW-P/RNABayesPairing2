@@ -9,12 +9,12 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 
-from pgmpy.base import DirectedGraph
-from pgmpy.factors.discrete import TabularCPD, JointProbabilityDistribution, DiscreteFactor
-from pgmpy.independencies import Independencies
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range, reduce
-from pgmpy.models.MarkovModel import MarkovModel
+from ..base import DirectedGraph
+from ..factors.discrete import TabularCPD, JointProbabilityDistribution, DiscreteFactor
+from ..independencies import Independencies
+from ..extern import six
+from ..extern.six.moves import range, reduce
+from ..models.MarkovModel import MarkovModel
 
 
 class BayesianModel(DirectedGraph):

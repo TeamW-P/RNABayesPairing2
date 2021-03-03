@@ -7,8 +7,8 @@ from math import sqrt
 
 import numpy as np
 
-from pgmpy.utils import _check_1d_array_object, _check_length_equal
-from pgmpy.sampling import LeapFrog, BaseSimulateHamiltonianDynamics, BaseGradLogPDF, _return_samples
+from ..utils import _check_1d_array_object, _check_length_equal
+from ..sampling import LeapFrog, BaseSimulateHamiltonianDynamics, BaseGradLogPDF, _return_samples
 
 
 class HamiltonianMC(object):

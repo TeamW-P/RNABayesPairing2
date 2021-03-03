@@ -5,10 +5,10 @@ from itertools import combinations
 
 import networkx as nx
 
-from pgmpy.estimators import StructureEstimator
-from pgmpy.estimators import K2Score
-from pgmpy.utils.mathext import powerset
-from pgmpy.models import BayesianModel
+from . import StructureEstimator
+from . import K2Score
+from ..utils.mathext import powerset
+from ..models import BayesianModel
 
 
 class ExhaustiveSearch(StructureEstimator):

@@ -2,8 +2,8 @@ from __future__ import division
 
 import numpy as np
 
-from pgmpy.factors.base import BaseFactor
-from pgmpy.factors.distributions import GaussianDistribution, CustomDistribution
+from ..base import BaseFactor
+from ..distributions import GaussianDistribution, CustomDistribution
 
 
 class ContinuousFactor(BaseFactor):

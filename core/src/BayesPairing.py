@@ -5,23 +5,23 @@ import sys
 #sys.path.append('/home/mcb/rsarra2/anaconda3/envs/py35/lib/python3.6/site-packages')
 import pickle
 #import subprocess
-import testSS
+from . import testSS
 import heapq
 from operator import itemgetter
 import ast
 import math
 #import time
-import make_BN_from_carnaval as makeBN
-from pgmpy.models import RNAModule
+from . import make_BN_from_carnaval as makeBN
+from .pgmpy.models import RNAModule
 import collections
-from scanning.src.classes import SSETree, SSE
-from scanning.scanning import exact_matching, yield_matching
+from .scanning.src.classes import SSETree, SSE
+from .scanning.scanning import exact_matching, yield_matching
 from anytree.iterators import PreOrderIter
 import numpy as np
 import itertools
 import math
 from Bio import AlignIO
-from folding import Fold
+from .folding import Fold
 import RNA
 Lambda  = 0.35
 

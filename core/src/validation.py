@@ -1,12 +1,12 @@
 import pickle
 import random
 
-import BayesPairing
-import make_BN_from_carnaval
-import parse_sequences
+from . import BayesPairing
+from . import make_BN_from_carnaval
+from . import parse_sequences
 import collections
 import argparse
-import testSS
+from . import testSS
 
 
 def computeCountAndLists(s):

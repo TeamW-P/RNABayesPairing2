@@ -6,11 +6,11 @@ from collections import defaultdict
 import numpy as np
 from networkx.algorithms import bipartite
 
-from pgmpy.models.MarkovModel import MarkovModel
-from pgmpy.base import UndirectedGraph
-from pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.factors.discrete import factor_product
-from pgmpy.extern.six.moves import filter, range, zip
+from .MarkovModel import MarkovModel
+from ..base import UndirectedGraph
+from ..factors.discrete import DiscreteFactor
+from ..factors.discrete import factor_product
+from ..extern.six.moves import filter, range, zip
 
 
 class FactorGraph(UndirectedGraph):

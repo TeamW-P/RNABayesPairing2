@@ -5,12 +5,12 @@ import itertools
 import networkx as nx
 import numpy as np
 
-from pgmpy.extern.six.moves import filter, range
-from pgmpy.extern.six import string_types
-from pgmpy.factors.discrete import factor_product
-from pgmpy.inference import Inference
-from pgmpy.models import JunctionTree
-from pgmpy.utils import StateNameDecorator
+from ..extern.six.moves import filter, range
+from ..extern.six import string_types
+from ..factors.discrete import factor_product
+from . import Inference
+from ..models import JunctionTree
+from ..utils import StateNameDecorator
 
 
 class VariableElimination(Inference):
