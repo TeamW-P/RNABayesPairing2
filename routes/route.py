@@ -52,7 +52,7 @@ def get_graph_per_module():
     except Exception as e:
         abort(400, "Received an invalid module: " + str(e))
 
-@routes.route("/string", methods=["GET"])
+@routes.route("/string", methods=["POST"])
 def bayespairing_string():
     '''
     Represents the primary endpoint for calling BayesPairing with string input.
@@ -61,22 +61,26 @@ def bayespairing_string():
 
     :returns: a jsonified dictionary of modules and their hits
     '''
-    return bayespairing(request.args)
+    if "arguments" not in request.form:
+        abort(400, description="Did not receive any arguments.")
+    return bayespairing(eval(request.form.get("arguments")))
 
 @routes.route("/file", methods=["POST"])
 def bayespairing_file():
     '''
     Represents the primary endpoint for calling BayesPairing with file input.
 
-    Inputs are provided in the request body. The file is provided as an individual argument with key file, 
+    Inputs are provided in the request body. The file is provided as an individual argument with key input, 
     with arguments provided as a JSON dictionary with key "arguments". Arguments are the same as in the string input case.
 
     :returns: a jsonified dictionary of modules and their hits
     '''
-    if "file" not in request.files:
-        abort(400, description="Did not receive a file.")
+    if "input" not in request.files:
+        abort(400, description="Did not receive an input file.")
+    if "arguments" not in request.form:
+        abort(400, description="Did not receive any arguments.")
 
-    file = request.files["file"]
+    file = request.files["input"]
 
     if file.filename == "":
         abort(400, description="Received an invalid file.")
@@ -93,7 +97,7 @@ def bayespairing_file():
 
         # for consistency, we convert from a string to an ImmutableMultiDict (and a dictionary in-between) 
         # so we can reuse the BaysesPairing method
-        return bayespairing(ImmutableMultiDict(eval(request.form.get("arguments")).items()), file.filename.rsplit(".", 1)[1], temp)
+        return bayespairing(eval(request.form.get("arguments")), file.filename.rsplit(".", 1)[1], temp)
         
     abort(400, description="BayesPairing failed for an unknown reason. Please check your inputs.")
 
@@ -109,14 +113,14 @@ def bayespairing(input, input_file_type = None, input_file = None):
     try:
         arguments = {}
 
-        sequence = input.get("sequence", default="", type = str)
-        if (sequence == "" and not input_file):
+        sequence = input.get("sequence")
+        if (not sequence and not input_file):
             abort(400, description="Did not receive a sequence as an argument or a file.")
-        elif (sequence == ""):
+        elif (not sequence):
             sequence = input_file.name
   
-        secondary_structure = input.get("secondary_structure", default="", type = str)
-        secondary_structure_infile = input.get("secondary_structure_infile", default = 0, type=int)
+        secondary_structure = input.get("secondary_structure", "")
+        secondary_structure_infile = input.get("secondary_structure_infile", 0)
 
         # a secondary structure can be provided via a fasta file. This means a string cannot be provided, so verify that only one was received
         # moreover, if a fasta file is provided, a secondary structure should not be provided via string
@@ -131,18 +135,18 @@ def bayespairing(input, input_file_type = None, input_file = None):
             secondary_structure = "infile"
 
         # the default dataset is always used for now
-        dataset = input.get("dataset", default="3dMotifAtlas_ALL", type = str)
+        dataset = input.get("dataset", "3dMotifAtlas_ALL")
 
         # load all arguments if they were provided or set the default value
-        arguments["t"] = input.get("score_threshold", default=-2.3, type = float)
-        arguments["samplesize"] = input.get("sample_size", default=20000, type = int)
-        arguments["theta"] = input.get("theta", default=1, type = int)
-        arguments["lambda"] = input.get("lambda", default=0.35, type = float)
-        arguments["w"] = input.get("window_length", default=200, type = int)
-        arguments["s"] = input.get("step_size", default=100, type = int)
-        arguments["mod"] = input.get("modules", default="", type = str)
-        arguments["constraints"] = input.get("constraints", default="", type = str)
-        arguments["aln"] = input.get("alignment_provided", default=0, type = int)
+        arguments["t"] = input.get("score_threshold", -2.3)
+        arguments["samplesize"] = input.get("sample_size", 20000)
+        arguments["theta"] = input.get("theta", 1)
+        arguments["lambda"] = input.get("lambda", 0.35)
+        arguments["w"] = input.get("window_length", 200)
+        arguments["s"] = input.get("step_size", 100)
+        arguments["mod"] = input.get("modules", "")
+        arguments["constraints"] = input.get("constraints", "")
+        arguments["aln"] = input.get("alignment_provided", 0)
         arguments["verbose"]=BAYESPAIRING_VERBOSE
 
         # we load the modules from the dataset to get the number of modules available.
