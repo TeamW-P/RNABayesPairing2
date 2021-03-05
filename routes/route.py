@@ -80,7 +80,7 @@ def bayespairing_file():
     if "input" not in request.files:
         abort(400, description="Did not receive an input file.")
 
-    file = request.files["input"]
+    file = request.files["bp_input"]
 
     if file.filename == "":
         abort(400, description="Received an invalid file.")
