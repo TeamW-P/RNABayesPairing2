@@ -77,7 +77,7 @@ def bayespairing_file():
 
     :returns: a jsonified dictionary of modules and their hits.
     '''
-    if "input" not in request.files:
+    if "bp_input" not in request.files:
         abort(400, description="Did not receive an input file.")
 
     file = request.files["bp_input"]
@@ -272,7 +272,6 @@ def retrieve_graphs(modules):
             graph_dict["edges"] = list(graph["edges"])
             module_graph_mapping[module] = graph_dict
 
-        dataset.close()
         return module_graph_mapping
     except ValueError as e:
         abort(
