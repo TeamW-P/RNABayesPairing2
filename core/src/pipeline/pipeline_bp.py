@@ -17,86 +17,40 @@ from operator import itemgetter
 # and also accepts file input as an argument.
 # helper methods are still called from parse_sequences
 
-def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}, input_file_type=None):
+
+def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_file_type=None, verbose=False):
     '''
     Runs BayesPairing given a set of arguments and a sequence or alignment.
 
     :param input: a string sequence or the path to a fasta or stockholm file
+    :param arguments: an ImmutableMuliDict containing optional arguments to be used by BayesPairing
     :param modules_to_parse: a list of modules to parse
     :param dataset: the name of the dataset to use
+    :param aln: whether an alignment (stockholm) is provided
+    :param t: the score threshold
     :param ss: a string secondary structure
-    :param arguments: a dictionary containing optional arguments to be used by BayesPairing
     :param input_file_type: the type of input file given (fasta or stockholm)
+    :param verbose: whether to print verbose logging
 
+    :returns: a tuple containing the input sequence or sequences and BayesPairing output
     '''
-    if "aln" in arguments:
-        aln = arguments["aln"]
-    else:
-        aln = False
+    # load all arguments if they were provided or set the default value
+    samplesize = arguments.get(
+        "sample_size", default=20000, type=int)
+    theta = arguments.get("theta", default=1, type=int)
+    Lambda = arguments.get("lambda", default=0.35, type=float)
+    w = arguments.get("window_length", default=200, type=int)
+    s = arguments.get("step_size", default=100, type=int)
+    constraints = arguments.get(
+        "constraints", default="", type=str)
 
-    if "theta" in arguments:
-        Theta = float(arguments["theta"])
-    else:
-        Theta = 1
+    # note: these arguments are not expected to be received from the user and are here for future expendability
+    Theta = arguments.get("theta", default=1, type=int)
+    Delta = arguments.get("delta")
+    fuzzy = arguments.get("fuzzy")
 
-    if "Lambda" in arguments:
-        Lambda = float(arguments["Lambda"])
-    else:
-        Lambda = 0.35
-
-    if "delta" in arguments:
-        Delta = float(arguments["delta"])
-    else:
-        Delta = None
-
-    if "fuzzy" in arguments:
-        fuzzy = arguments["fuzzy"]
-    else:
-        fuzzy = None
-
-    if "verbose" in arguments:
-        verbose = arguments["verbose"]
-    else:
-        verbose = False
-
-    if "pretrained" in arguments:
-        pretrained = arguments["pretrained"]
-    else:
-        pretrained = False
-
-    if "samplesize" in arguments:
-        samplesize = int(arguments["samplesize"])
-    else:
-        samplesize = 20000
-
-    if "t" in arguments:
-        t = float(arguments["t"])
-    else:
-        t = -2.3
-    if "w" in arguments:
-        w = int(arguments["w"])
-    else:
-        w = 200
-    if "s" in arguments:
-        s = int(arguments["s"])
-    else:
-        s = 100
-    if "o" in arguments:
-        o = arguments["o"]
-    else:
-        o = "output"
-
-    if "interm" in arguments:
-        interm = arguments["interm"]
-    else:
-        interm = False
-
-    if "constraints" in arguments:
-        constraints = arguments["constraints"]
-    else:
-        constraints = ""
-
-    # not relevant within context of pipeline
+    pretrained = False
+    interm = False
     first_run = False
 
     if input_file_type == "st":
