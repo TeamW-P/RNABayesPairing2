@@ -704,11 +704,11 @@ if __name__ == "__main__":
     if args.d != None:
         dataset = args.d
         if dataset == "3dMotifAtlas_RELIABLE":
-            dataset = reliable_dataset
+            dataset = RELIABLE
         elif dataset == "3dMotifAtlas_ALL":
-            dataset = all_dataset
+            dataset = ALL
     else:
-        dataset = "all_dataset"
+        dataset = "ALL"
 
     # the default dataset is rna3dmotif
 
