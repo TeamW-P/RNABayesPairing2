@@ -8,6 +8,7 @@ from . import BN_builder
 import networkx as nx
 import subprocess
 from matplotlib import pyplot as plt
+import json
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
 
@@ -247,10 +248,77 @@ def make_graph_from_carnaval(g, alignment):
 
     return motif
 
-def call_makeBN(mod,dataset,left_out, leave_out_seq = False, left_out_seq = "", Lambda=1, Theta=1,indexes=[],kfold=False,retrain=False):
+def call_makeBN(mod, dataset, module_data, Lambda=1, Theta=1,retrain=False):
     ok_indexes = []
     current_ID = mod
-    excluded = left_out
+
+    #excluded = left_out
+
+    # Make the BN given the specified module
+    nodes = [tuple(x) for x in module_data["master_graph"]["nodes"]]
+    edges = [tuple(x) for x in module_data["master_graph"]["edges"]]
+
+    # build the networkx graphs from the data
+    # Only build the first graph or master graph?
+    g = nx.DiGraph()
+    g.add_nodes_from(nodes)
+    g.add_edges_from(edges)
+
+    # extract the motif sequences
+    motif_seqs = []
+    for training_set in module_data["training_set"]:
+        full_seq = training_set["seq"]
+        seq_pos = training_set["seq_pos"]
+
+        # Small error in dataset, will fix later
+        try:
+            motif_seq =[full_seq[x] for x in seq_pos]
+            motif_seqs.append("".join(motif_seq))
+        except:
+            pass
+
+
+
+    # Train the model if it doesn't exist or needs to be retrained
+    # Check if module already exists
+    if (os.path.isfile(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + "_models.pickle"))) and not retrain:
+        nets = pickle.load(open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + "_models.pickle"), "rb"))
+        if mod in nets:
+            return nets[mod]
+        else:
+            aln = {}
+            for n in sorted(list(g.nodes())):
+                aln[n] = n
+            alignment = get_alignment(g, aln, motif_seqs)
+
+    else:
+        try:
+            existing_models = pickle.load(open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + "_models.pickle"), 'rb'))
+        except:
+            existing_models = {}
+        if current_ID in existing_models:
+            return existing_models[current_ID]
+        else:
+
+            aln = {}
+            for n in sorted(list(g.nodes())):
+                aln[n] = n
+            alignment = get_alignment(g, aln, motif_seqs)
+
+    #TODO: test_seqs variable is outdated/not used, should be removed from the BN functions
+    test_seqs = []
+
+    motif = make_graph_from_carnaval(g, alignment)
+    pwm = BN_builder.build_pwm(sorted(list(motif.nodes())), alignment)
+
+    BN = BN_builder.build_BN(motif, pwm, alignment)
+
+    BN.from_alignment_dataset(dataset, mod, [g], alignment, test_seqs, [], Lambda, Theta)
+    return BN
+
+    # Below is old code with pickle dataset + CV
+    #TODO: Delete the old code
+    '''
     g_list = pickle.load(open(os.path.join(CURRENT_DIRECTORY, "../models/"+dataset + "_one_of_each_graph.cPickle"),'rb'))
     seq_list = pickle.load(open(os.path.join(CURRENT_DIRECTORY, "../models/"+dataset + "_sequences.pickle"),'rb'))
     try:
@@ -338,18 +406,7 @@ def call_makeBN(mod,dataset,left_out, leave_out_seq = False, left_out_seq = "", 
         for n in sorted(list(g.nodes())):
             aln[n] = n
         alignment = get_alignment(g,aln,extra_seqs)
-
-    
-
-                       
-
-    motif = make_graph_from_carnaval(g, alignment)
-    pwm = BN_builder.build_pwm(sorted(list(motif.nodes())),alignment)
-
-    BN  = BN_builder.build_BN(motif,pwm,alignment)
-
-    BN.from_alignment_dataset(dataset, mod, [g], alignment, test_seqs, [], Lambda, Theta)
-    return BN
+'''
 
 # Temporary placeholder function for CV for building a Bayesian Network
 def make_BN(module, dataset, graphs, motif_sequences, Lambda=0.35, Theta=1):

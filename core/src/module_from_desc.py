@@ -7,8 +7,11 @@ import operator
 import os.path
 import pickle
 import argparse
+import json
+from Bio import SeqIO
+import os
 
-
+CURRENT_DIRECTORY = os.path.dirname(__file__)
 
 def compare_graphs(g1,g2):
     em = iso.generic_edge_match('label',["cWW","tWW","cWS","tWS","cWH","tWH","cHH","tHH","tHW","cHW","cHS","tHS","cSW","tSW","cSH","tSH","cSS","tSS","c++","t++","c--","t--","b53"],operator.eq)
@@ -168,18 +171,18 @@ def get_all_signatures_from_graphs(gs):
     
     
 def create_module(desc,fasta,model_name, list_of_nodes, PDBs=[]):
-    graphs_name = "../models/" +model_name+"_one_of_each_graph.cPickle"
-    aln_name = "../models/"+model_name+"_aligned_modulegraphs.cPickle"
-    PDB_name = "../models/"+model_name+"_PDB_names.cPickle"
-    seq_name = "../models/"+model_name+"_sequences.pickle"
-    siblings =  "../models/"+model_name+"_siblings.pickle"
-    repeat="../models/repeat.pickle"
+    graphs_name = os.path.join(CURRENT_DIRECTORY, "../models/" +model_name+"_one_of_each_graph.cPickle")
+    aln_name = os.path.join(CURRENT_DIRECTORY, "../models/"+model_name+"_aligned_modulegraphs.cPickle")
+    PDB_name = os.path.join(CURRENT_DIRECTORY, "../models/"+model_name+"_PDB_names.cPickle")
+    seq_name = os.path.join(CURRENT_DIRECTORY, "../models/"+model_name+"_sequences.pickle")
+    siblings =  os.path.join(CURRENT_DIRECTORY, "../models/"+model_name+"_siblings.pickle")
+    repeat= os.path.join(CURRENT_DIRECTORY, "../models/repeat.pickle")
     if 'desc' in desc.lower():
         g  = make_graph(desc)
     else:
-        g = pickle.load(open(desc,'rb'))
+        g = pickle.load(open(os.path.join(CURRENT_DIRECTORY, desc),'rb'))
     if os.path.isfile(graphs_name):
-        number=pickle.load(open(graphs_name,'rb'))
+        number=pickle.load(open(os.path.join(CURRENT_DIRECTORY, graphs_name),'rb'))
     else:
         number=[]
     moduleSignatures = get_all_signatures_from_graphs(list_of_nodes)
@@ -205,14 +208,14 @@ def create_module(desc,fasta,model_name, list_of_nodes, PDBs=[]):
         
     
     try:
-        seqs = pickle.load(open(seq_name,'rb'))
+        seqs = pickle.load(open(os.path.join(CURRENT_DIRECTORY, seq_name),'rb'))
     except:
         seqs = []
 
     if os.path.isfile(graphs_name):
-        graphs = pickle.load(open(graphs_name,"rb"))
-        aln = pickle.load(open(aln_name,"rb"))
-        PDB_list = pickle.load(open(PDB_name,"rb"))
+        graphs = pickle.load(open(os.path.join(CURRENT_DIRECTORY, graphs_name),"rb"))
+        aln = pickle.load(open(os.path.join(CURRENT_DIRECTORY, aln_name),"rb"))
+        PDB_list = pickle.load(open(os.path.join(CURRENT_DIRECTORY, PDB_name),"rb"))
     else:
         graphs=[]
         aln = []
@@ -236,7 +239,7 @@ def create_module(desc,fasta,model_name, list_of_nodes, PDBs=[]):
                 else:
                     new_aln[position]= [position]
             
-            
+
         if PDBs == []:
             PDBs = ["None" for x in graph_list]
 
@@ -245,62 +248,171 @@ def create_module(desc,fasta,model_name, list_of_nodes, PDBs=[]):
         seqs.append(sequences)
         aln.append(new_aln)
     
-    pickle.dump(graphs, open(graphs_name, 'wb'))
-    pickle.dump(aln, open(aln_name, 'wb'))
-    pickle.dump(PDB_list, open(PDB_name, 'wb'))
-    pickle.dump(seqs,open(seq_name, "wb"))
-    pickle.dump(sibDict,open(siblings, "wb"))
-    pickle.dump(len(moduleSignatures),open(repeat, "wb"))
+    pickle.dump(graphs, open(os.path.join(CURRENT_DIRECTORY, graphs_name), 'wb'))
+    pickle.dump(aln, open(os.path.join(CURRENT_DIRECTORY, aln_name), 'wb'))
+    pickle.dump(PDB_list, open(os.path.join(CURRENT_DIRECTORY, PDB_name), 'wb'))
+    pickle.dump(seqs,open(os.path.join(CURRENT_DIRECTORY, seq_name), "wb"))
+    pickle.dump(sibDict,open(os.path.join(CURRENT_DIRECTORY, siblings), "wb"))
+    pickle.dump(len(moduleSignatures),open(os.path.join(CURRENT_DIRECTORY), repeat, "wb"))
     print("YOUR MODULE WAS ADDED TO DATASET ", model_name, "AND RECEIVED THE NUMBERS",len(graphs)-1-len(moduleSignatures),"TO", len(graphs)-1, " WITH ",len(sequences[0])," SEQUENCES")
     return graphs,aln,sequences
+
+def create_module(desc, fasta, model_name, list_of_nodes, PDBs=[], pdb_info_file="", full_seq_file="", atlas_name=""):
+    repeat = os.path.join(CURRENT_DIRECTORY, "../models/repeat.pickle")
+    dataset_name = os.path.join(CURRENT_DIRECTORY, "../models/" + model_name + ".json")
+
+    dataset = {}
+    # load the dataset if it exists
+    if os.path.isfile(dataset_name):
+        with open(dataset_name) as f:
+            dataset = json.load(f)
+
+    # load in the graph
+    if 'desc' in desc.lower():
+        g = make_graph(desc)
+    else:
+        g = pickle.load(open(desc, 'rb'))
+
+    pdb_aln = []
+    pdb_seq = []
+    # Try to load PDB_info
+    if os.path.isfile(pdb_info_file):
+        with open(pdb_info_file, 'rb') as f:
+            pdb_aln, pdb_seq = pickle.load(f)
+
+    # try to load full_seq_file
+    full_records = []
+    if os.path.isfile(full_seq_file):
+        full_records = list(SeqIO.parse(full_seq_file, "fasta"))
+
+    # module signatures from list of nodes
+    module_signatures = get_all_signatures_from_graphs(list_of_nodes)
+    print("THERE ARE", len(module_signatures), "MODULES SIGNATURES:")
+    print(module_signatures)
+
+    dataset_length = len(dataset)
+
+    # for each signaature, add the module
+    for sig in module_signatures:
+
+        print("sig is", sig)
+        graph_list, sequences = make_new_graph_examples(g, fasta, sig)
+
+        # this gives alignment of graphs
+        new_aln = {}
+        for graph in range(len(graph_list)):
+            for position in list(graph_list[0].nodes()):
+                # print("position",position)
+                if position in new_aln:
+                    new_aln[position].append(position)
+                else:
+                    new_aln[position] = [position]
+
+        if PDBs == []:
+            PDBs = ["None" for x in graph_list]
+
+        data = {}
+        data["master_graph"] =  {"nodes":list(graph_list[0].nodes(data=True)), "edges": list(graph_list[0].edges(data=True))}
+
+        # list comprehension could also work but we'll use a for loop for readability
+        data["graphs"] = {"nodes":[], "edges": []}
+        for g in graph_list:
+            data["graphs"]["nodes"].append(list(g.nodes(data=True)))
+            data["graphs"]["edges"].append(list(g.edges(data=True)))
+
+        # alignment data of graphs
+        data["aln"] = new_aln
+
+        # PDB names and positions of the motif
+        data["PDBs"] = dict(pdb_aln)
+        # PDB names and the sequences of the motif
+        data["subsequences"] = dict(pdb_seq)
+
+        data["training_set"] = []
+        # training sequences
+        if len(list_of_nodes) == len(full_records):
+            # adding training sequences
+            for index, record in enumerate(full_records):
+                data["training_set"].append({
+                    "source": record.id,
+                    "seq": str(record.seq),
+                    "source_pos": [],
+                    "seq_pos": list_of_nodes[index]
+                })
+
+        # siblings
+        sib_sigs = list(range(dataset_length, dataset_length + len(module_signatures)))
+
+        # in sib dict, just remove self
+        module_num = len(dataset)
+        sib_sigs.remove(module_num)
+        data["siblings"] = sib_sigs
+
+        # add atlas name
+        if atlas_name:
+            data["atlas_name"] = atlas_name
+        else:
+            data["atlas_name"] = ""
+
+        # general motif name, we will populate this later
+        data["general_name"] = ""
+
+        dataset[len(dataset)] = data
+
+    print("len", len(dataset))
+    # dump the json
+    with open(dataset_name, 'w') as out:
+        json.dump(dataset, out)
+
+    print("YOUR MODULE WAS ADDED TO DATASET ", model_name, "AND RECEIVED THE NUMBERS", len(dataset) - len(module_signatures), "TO", len(dataset) - 1, " WITH ", len(sequences[0]), " SEQUENCES")
 
 
 def fuse_existing_databases(new_dataset,name1,name2,l1,l2):
     one_of_each_graph = []
-    a1 = pickle.load(open(name1 + "_one_of_each_graph.cPickle", 'rb'))
-    a2 = pickle.load(open(name2 + "_one_of_each_graph.cPickle", 'rb'))
+    a1 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name1 + "_one_of_each_graph.cPickle"), 'rb'))
+    a2 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name2 + "_one_of_each_graph.cPickle"), 'rb'))
     for ind,i in enumerate(a1):
         if ind in l1:
             one_of_each_graph.append(i)
     for ind,i in enumerate(a2):
         if ind in l2:
             one_of_each_graph.append(i)
-    pickle.dump(one_of_each_graph,open("../models/"+new_dataset+"_one_of_each_graph.cPickle", "wb"))
+    pickle.dump(one_of_each_graph,open(os.path.join(CURRENT_DIRECTORY, "../models/"+new_dataset+"_one_of_each_graph.cPickle"), "wb"))
 
     aligned_modulegraphs = []
-    a1 = pickle.load(open(name1 + "_aligned_modulegraphs.cPickle", 'rb'))
-    a2 = pickle.load(open(name2 + "_aligned_modulegraphs.cPickle", 'rb'))
+    a1 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name1 + "_aligned_modulegraphs.cPickle"), 'rb'))
+    a2 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name2 + "_aligned_modulegraphs.cPickle"), 'rb'))
     for ind,i in enumerate(a1):
         if ind in l1:
             aligned_modulegraphs.append(i)
     for ind,i in enumerate(a2):
         if ind in l2:
             aligned_modulegraphs.append(i)
-    pickle.dump(aligned_modulegraphs,open("../models/"+new_dataset+"aligned_modulegraphs.cPickle", "wb"))
+    pickle.dump(aligned_modulegraphs,open(os.path.join(CURRENT_DIRECTORY, "../models/"+new_dataset+"aligned_modulegraphs.cPickle"), "wb"))
 
 
     PDB = []
-    a1 = pickle.load(open(name1 + "PDB.cPickle", 'rb'))
-    a2 = pickle.load(open(name2 + "PDB.cPickle", 'rb'))
+    a1 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name1 + "PDB.cPickle"), 'rb'))
+    a2 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name2 + "PDB.cPickle"), 'rb'))
     for ind,i in enumerate(a1):
         if ind in l1:
             PDB.append(i)
     for ind,i in enumerate(a2):
         if ind in l2:
             PDB.append(i)
-    pickle.dump(PDB,open("../models/"+new_dataset+"PDB.cPickle", "wb"))
+    pickle.dump(PDB,open(os.path.join(CURRENT_DIRECTORY, os.path.join(CURRENT_DIRECTORY, "../models/"+new_dataset+"PDB.cPickle"), "wb")))
 
 
     PDB_pos = []
-    a1 = pickle.load(open(name1 + "PDB_pos.cPickle", 'rb'))
-    a2 = pickle.load(open(name2 + "PDB_pos.cPickle", 'rb'))
+    a1 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name1 + "PDB_pos.cPickle"), 'rb'))
+    a2 = pickle.load(open(os.path.join(CURRENT_DIRECTORY, name2 + "PDB_pos.cPickle"), 'rb'))
     for ind,i in enumerate(a1):
         if ind in l1:
             PDB_pos.append(i)
     for ind,i in enumerate(a2):
         if ind in l2:
             PDB_pos.append(i)
-    pickle.dump(PDB_pos,open("../models/"+new_dataset+"PDB_pos.cPickle", "wb"))
+    pickle.dump(PDB_pos,open(os.path.join(CURRENT_DIRECTORY, "../models/"+new_dataset+"PDB_pos.cPickle"), "wb"))
 
 
 import ast
@@ -318,6 +430,11 @@ if __name__ == "__main__":
     parser.add_argument("-nodes", help="List of lsit of nodes as a string", required=True)
 
     parser.add_argument('-pdb', nargs='*', help='PDBs in which input is found')
+    parser.add_argument('-pdb_info', help='Pickle file with tuple of PDB module positions and nucleotides for each column')
+    parser.add_argument("-full_seq", help="full sequences, FASTA format")
+    parser.add_argument("-atlas_name", help="name of the motif in the 3dMotifAtlas")
+
+
     args = parser.parse_args()
-    mod = create_module(args.g,args.seq, args.n, ast.literal_eval(args.nodes), args.pdb)
+    create_module(args.g,args.seq, args.n, ast.literal_eval(args.nodes), args.pdb, pdb_info_file=args.pdb_info, full_seq_file=args.full_seq, atlas_name=args.atlas_name)
 
