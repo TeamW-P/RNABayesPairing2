@@ -6,8 +6,8 @@ from . import pipeline_chefschoice as chefs_choice
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
 ALLOWED_EXTENSIONS = {"fa", "fasta", "sl"}
-ALLOWED_DATASETS = {"reliable_dataset", "all_dataset"}
-DEFAULT_DATASET = "reliable_dataset"
+ALLOWED_DATASETS = {"RELIABLE", "ALL"}
+DEFAULT_DATASET = "ALL"
 VERBOSE = False
 
 
