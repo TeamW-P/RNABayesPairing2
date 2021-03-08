@@ -23,6 +23,11 @@ import math
 from Bio import AlignIO
 from .folding import Fold
 import RNA
+import json
+import os
+
+CURRENT_DIRECTORY = os.path.dirname(__file__)
+
 Lambda  = 0.35
 
 md = RNA.md()
@@ -35,10 +40,15 @@ def boltzmann(e):
 
 
 def setup_BN(modules, BNs, dataset,left_out,leave_out_sequence=False,left_out_sequence="",Lambda=0.35,Theta=1, verbose=False,indexes=[]):
+    # Load dataset here for optimmization
+    with open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + ".json")) as f:
+        modules_data = json.load(f)
+
     for mod in modules:
         if mod not in BNs:
             print("making Bayes Net for module",mod)
-            BNs[mod] = makeBN.call_makeBN(mod, dataset,left_out,leave_out_sequence,left_out_sequence, Lambda, Theta,indexes=indexes)
+            # Pass in the module_data
+            BNs[mod] = makeBN.call_makeBN(mod, dataset, modules_data[str(mod)], Lambda, Theta)
     if verbose:
         print("Bayes Net dataset:", BNs.keys())
     return BNs

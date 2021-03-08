@@ -13,8 +13,11 @@ from Bio import AlignIO
 import os.path
 from operator import itemgetter
 import sys
+import json
+from .chefschoice import bp_chefs_choice
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
+INPUT_DIRECTORY = os.path.join(CURRENT_DIRECTORY, "../input")
 
 def unpick(dataset,direc,typ):
     file_path = os.path.join(CURRENT_DIRECTORY, "../"+direc+"/" + dataset + "_"+typ)
@@ -55,14 +58,21 @@ def run_BP(seq, ss, modules_to_parse, dataset, left_out, aln=False, t=-5, sample
             print('PRE-LOADED MODELS:',str(list(nets.keys())))
         BNs = nets
     #print("PARSING SEQUENCE")
-    if aln==True:
+    if aln:
         return_dict = BayesPairing.parse_alignment(seq, modules_to_parse, ss, dataset, BNs, t, samplesize, Lambda, Theta, Delta, fuzzy=fuzzy, verbose=verbose)
     else:
         return_dict = BayesPairing.parse_sequence(seq, modules_to_parse, ss, dataset, BNs,t, samplesize, Lambda, Theta, Delta, fuzzy=fuzzy, verbose=verbose, constraints = constraints)
-
-        
     #siblings = pickle.load(open("../models/" + dataset + "_siblings.pickle", "rb"))    
-    siblings = unpick(dataset,"models","siblings.pickle")
+    #siblings = unpick(dataset,"models","siblings.pickle")
+
+    # load the siblings from the json dataset, siblings should be a dict in the format {0: [1,2,3], 1:[0,2,3]}...
+    with open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + ".json")) as f:
+        module_siblings = json.load(f)
+
+    # map the json dict to proper format
+    siblings = {int(k): v["siblings"] for k, v in module_siblings.items()}
+
+    # instead of mapping the dict to the sibling dict, pass the dataset through and process after
 
     noSiblings = process_siblings(return_dict,siblings)
     
@@ -96,7 +106,7 @@ def process_siblings(results,siblings):
 def parse_sequences(input,modules_to_check=[],dataset="",ss="",m=4,n=3,sm=0.3,mc=3,p=25000,sw=1,t=15.7,w=200,s=100,sscons=2):
     if dataset=="":
         dataset="rna3dmotif"
-    graphs = pickle.load(open("../models/" + dataset + "_one_of_each_graph.cPickle", "rb"))
+    graphs = pickle.load(open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + "_one_of_each_graph.cPickle"), "rb"))
     if len(modules_to_check) == 0:
         modules_to_check = range(len(graphs))
 
@@ -116,21 +126,24 @@ def get_stats(prediction_scores,modules_to_parse,threshold=-5):
     for sequence in prediction_scores:
         hit_dict = {}
         n_sequences=n_sequences+1
-        for window in prediction_scores[sequence]:
-            scored_positions = {}
-            #print(window)
-            for module in window:
-                scored_positions[module] = []
-                #print("SCANNING",module,window[module])
+        #for window in prediction_scores[sequence]:
+        window = prediction_scores[sequence] 
+        scored_positions = {}
+        #print(window)
+        for module in window:
+            scored_positions[module] = []
+            #print("SCANNING",module,window[module])
+
                 
 
-                mod_number = module
-                if len(window[module])>0:
-                    max_score = sorted(window[module],key=itemgetter(2),reverse=True)[0][2]
-                    if max_score>threshold and window[module][0][1] not in scored_positions[module]:
-                        #print("admissible score")
-                        scored_positions[module].append(window[module][0][1])
-                        hit_dict[module]=True
+            mod_number = module
+            if len(window[module])>0:
+                max_score = sorted(window[module],key=itemgetter(2),reverse=True)[0][2]
+                if max_score>threshold and window[module][0][1] not in scored_positions[module]:
+                    #print("admissible score")
+                    scored_positions[module].append(window[module][0][1])
+                    hit_dict[module]=True
+
         for mod in hit_dict:
             if hit_dict[mod]:
                 n_hits[mod]+=1
@@ -138,7 +151,9 @@ def get_stats(prediction_scores,modules_to_parse,threshold=-5):
     output = []
     #print("HITS",n_hits)
     for m in n_hits:
-        output.append(["|", m, n_hits[m],round(n_hits[m]/n_sequences,2), "|"])
+        avgHits = round(n_hits[m]/n_sequences,2)
+        if avgHits >0 :
+            output.append(["|", m, n_hits[m],avgHits, "|"])
     OUTPUT_STRING=OUTPUT_STRING+("=========================================\n")
     headers = ["|", "MODULE", "N HITS", "PERCENTAGE", "|"]
     output.insert(0, headers)
@@ -147,7 +162,16 @@ def get_stats(prediction_scores,modules_to_parse,threshold=-5):
     OUTPUT_STRING=OUTPUT_STRING+"=========================================\n"
     return OUTPUT_STRING
 
-
+def aggregate(maxs,all_maxes):
+    #print("ALL",all_maxes)
+    #print("maxs",maxs)
+    for mod in maxs:
+        if mod not in all_maxes:
+            all_maxes[mod] = maxs[mod]
+        else:
+            for j in maxs[mod]:
+                all_maxes[mod].append(j)
+    return all_maxes
 
 def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
     fOUTPUT = ""
@@ -230,14 +254,13 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
         first_run=arguments["init"]
     else:
         first_run= False
-        
-        
+            
     if ".st" in input.lower():
         if verbose:
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "r") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "r") as f:
             for num, record in enumerate(SeqIO.parse(f, "stockholm")):
                 if verbose:
                     print("scanning record", record.id)
@@ -251,15 +274,15 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                 sequences.append((seq,ugseq))
             #print("SEQUENCES",len(sequences))
 
-            if len(sequences[0]) < 3000:
+            if len(sequences[0]) < 250:
                 maxs = run_BP(sequences, ss, modules_to_parse, dataset, "NONE", aln= aln, t= t, samplesize=samplesize, pretrained=pretrained, Lambda=Lambda, Theta=Theta, Delta=Delta, fuzzy=fuzzy, verbose=verbose, first_run=first_run)
                 first_run=False
-                prediction_scores[id] = [maxs]
+                prediction_scores[id] = maxs
                 if interm:
                     print(maxs)
 
             else:
-                all_maxes = []
+                all_maxes = {}
                 index = 0
                 while index + w < len(seq):
                     if verbose:
@@ -277,7 +300,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                     for mod in maxs:
                         for cand in maxs[mod]:
                             cand[1] = [[k + bf for k in l] for l in cand[1]]
-                    all_maxes.append(maxs)
+                    #all_maxes.append(maxs)
+                    all_maxes = aggregate(maxs,all_maxes)
                     index = index + s
                 if verbose:
                     print("Running BayesPairing on sequence window:", index, len(seq))
@@ -292,7 +316,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                 for mod in maxs:
                     for cand in maxs[mod]:
                         cand[1] = [[k + bf for k in l] for l in cand[1]]
-                all_maxes.append(maxs)
+                #all_maxes.append(maxs)
+                all_maxes = aggregate(maxs,all_maxes)
                 prediction_scores[id] = all_maxes
         # print("PREDICTION_SCORES",prediction_scores)
         for id in prediction_scores:
@@ -309,7 +334,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "r") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "r") as f:
             for num, record in enumerate(SeqIO.parse(f, "fasta")):
                 if verbose:
                     print("scanning record", record.id)
@@ -326,7 +351,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             if len(sequences[0]) < 3000:
                 maxs = run_BP(sequences, ss, modules_to_parse, dataset, "NONE", aln= aln, t= t, samplesize=samplesize, pretrained=pretrained, Lambda=Lambda, Theta=Theta, Delta=Delta, fuzzy=fuzzy, verbose=verbose, first_run=first_run)
                 first_run=False
-                prediction_scores[id] = [maxs]
+                prediction_scores[id] = maxs
                 if interm:
                     print(maxs)
 
@@ -349,7 +374,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                     for mod in maxs:
                         for cand in maxs[mod]:
                             cand[1] = [[k + bf for k in l] for l in cand[1]]
-                    all_maxes.append(maxs)
+                    #all_maxes.append(maxs)
+                    all_maxes = aggregate(maxs,all_maxes)
                     index = index + s
                 if verbose:
                     print("Running BayesPairing on sequence window:", index, len(seq))
@@ -365,7 +391,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                 for mod in maxs:
                     for cand in maxs[mod]:
                         cand[1] = [[k + bf for k in l] for l in cand[1]]
-                all_maxes.append(maxs)
+                #all_maxes.append(maxs)
+                all_maxes = aggregate(maxs,all_maxes)
                 prediction_scores[id] = all_maxes
         # print("PREDICTION_SCORES",prediction_scores)
         for id in prediction_scores:
@@ -381,7 +408,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             print("FASTA file detected, scanning", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "rU") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "r") as f:
             for num, record in enumerate(SeqIO.parse(f, "fasta")):
                 id = record.id
                 seq = str(record.seq)
@@ -389,15 +416,15 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                 sequences.append(seq)
                 if "T" in seq:
                     seq = str(seq).replace("T", "U")
-                if len(seq)<300:
+                if len(seq)<250:
                     maxs = run_BP(seq, ss, modules_to_parse, dataset, "NONE", aln= aln, t= t, samplesize=samplesize, pretrained=pretrained, Lambda=Lambda, Theta=Theta, Delta=Delta, fuzzy=fuzzy, verbose=verbose, first_run=first_run)
                     first_run=False
                     if interm:
                         print(maxs)
-                    prediction_scores[id] = [maxs]
+                    prediction_scores[id] = maxs
 
                 else:
-                    all_maxes = []
+                    all_maxes = {}
                     index = 0
                     while index + w < len(seq):
                         if verbose:
@@ -410,7 +437,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                         for mod in maxs:
                             for cand in maxs[mod]:
                                 cand[1] = [[k + bf for k in l] for l in cand[1]]
-                        all_maxes.append(maxs)
+                        #all_maxes.append(maxs)
+                        all_maxes = aggregate(maxs,all_maxes)
                         index = index + s
                     if verbose:
                         print("Running BayesPairing on sequence window:", index, len(seq))
@@ -420,7 +448,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                     for mod in maxs:
                         for cand in maxs[mod]:
                             cand[1] = [[k + bf for k in l] for l in cand[1]]
-                    all_maxes.append(maxs)
+                    #all_maxes.append(maxs)
+                    all_maxes = aggregate(maxs,all_maxes)
                     prediction_scores[id] = all_maxes
 
         for id in prediction_scores:
@@ -435,7 +464,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             print("FASTA file file with secondary structure detected, scanning", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "rU") as f:
+        with open(os.path.join(INPUT_DIRECTORY, input), "rU") as f:
             lines = f.readlines()
             for line_n in range(0, len(lines), 3):
                 id = lines[line_n].strip(">").strip("\n")
@@ -448,10 +477,10 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                 if len(seq)<300:
                     maxs = run_BP(seq, ss, modules_to_parse, dataset, "NONE", aln= aln, t= t, samplesize=samplesize, pretrained=pretrained, Lambda=Lambda, Theta=Theta, Delta=Delta, fuzzy=fuzzy, verbose=verbose, first_run=first_run)
                     first_run=False
-                    prediction_scores[id] = [maxs]
+                    prediction_scores[id] = maxs
 
                 else:
-                    all_maxes = []
+                    all_maxes = {}
                     index = 0
                     while index + w < len(seq):
                         if verbose:
@@ -464,7 +493,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                         for mod in maxs:
                             for cand in maxs[mod]:
                                 cand[1] = [[k + bf for k in l] for l in cand[1]]
-                        all_maxes.append(maxs)
+                        #all_maxes.append(maxs)
+                        all_maxes = aggregate(maxs,all_maxes)
                         index = index + s
                     if verbose:
                         print("Running BayesPairing on sequence window:", index, index + w)                   
@@ -474,7 +504,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                     for mod in maxs:
                         for cand in maxs[mod]:
                             cand[1] = [[k + bf for k in l] for l in cand[1]]
-                    all_maxes.append(maxs)
+                    #all_maxes.append(maxs)
+                    all_maxes = aggregate(maxs,all_maxes)
                     prediction_scores[id] = all_maxes
         for id in prediction_scores:
             fOUTPUT=fOUTPUT+"\nRESULTS FOR ID "+id+"\n"
@@ -495,10 +526,11 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             #first_run=False
             if interm:
                 print(maxs)
-            fOUTPUT=fOUTPUT+present_output([maxs], t)+"\n"
-            pickle.dump(maxs,open(os.path.join(CURRENT_DIRECTORY, "../output/"+o+".pickle"),"wb"))
+            fOUTPUT=fOUTPUT+present_output(maxs, t)+"\n"
+            prediction_scores = {"input_seq":maxs}
+            pickle.dump(prediction_scores,open(os.path.join(CURRENT_DIRECTORY, "../output/"+o+".pickle"),"wb"))
         else:
-            all_maxes = []
+            all_maxes = {}
             index = 0
             while index + w < len(input):
                 if verbose:
@@ -512,7 +544,8 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                 for mod in maxs:
                     for cand in maxs[mod]:
                         cand[1] = [[k + bf for k in l] for l in cand[1]]
-                all_maxes.append(maxs)
+                #all_maxes.append(maxs)
+                all_maxes = aggregate(maxs,all_maxes)
                 index = index + s
             if verbose:
                 print("Running Bayespairing on sequence window:", index, len(input))
@@ -522,11 +555,14 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             for mod in maxs:
                 for cand in maxs[mod]:
                     cand[1] = [[k + bf for k in l] for l in cand[1]]
-            all_maxes.append(maxs)
+            #all_maxes.append(maxs)
+            all_maxes = aggregate(maxs,all_maxes)
 
             fOUTPUT=fOUTPUT+present_output(all_maxes, t)+"\n"
-            pickle.dump(all_maxes,open(os.path.join(CURRENT_DIRECTORY, "../output/"+o+".pickle"),"wb"))
-    return fOUTPUT,sequences
+            prediction_scores = {"input_seq":all_maxes}
+            pickle.dump(prediction_scores,open(os.path.join(CURRENT_DIRECTORY, "../output/"+o+".pickle"),"wb"))
+
+    return fOUTPUT,sequences,prediction_scores
 
 
 
@@ -548,8 +584,10 @@ def seq_ranges(all_pos):
                 output_string = output_string + "," + str(pos)
             continue
         if ind == len(all_pos) - 1:
-            if all_pos[ind - 1] == (all_pos[ind - 2] + 1):
+            if all_pos[ind] == (all_pos[ind - 1] + 1):
                 output_string = output_string + "-" + str(pos)
+            else:
+                output_string = output_string + "," + str(pos)
     return output_string
 
 
@@ -567,15 +605,16 @@ def check_already_there(results, new_range, new_mod):
 def present_output(all_maxes, threshold, offset=0):
     OUTPUT_STRING = ""
     output = []
-    for m in all_maxes:
+    #for m in all_maxes:
         #print("all_maxes",m)
-        for current_module in sorted(m.keys()):
-            if len(m[current_module])<1:
-                continue
-            for sub_max in m[current_module]:
-                this_max = [round(sub_max[2], 3), seq_ranges(sub_max[1]),sub_max[0]]
-                if this_max[0] > threshold and not check_already_there(output, this_max, current_module):
-                    output.append(["|", current_module, *this_max, "|"])
+    m = all_maxes
+    for current_module in sorted(m.keys()):
+        if len(m[current_module])<1:
+            continue
+        for sub_max in m[current_module]:
+            this_max = [round(sub_max[2], 3), seq_ranges(sub_max[1]),sub_max[0]]
+            if this_max[0] > threshold and not check_already_there(output, this_max, current_module):
+                output.append(["|", current_module, *this_max, "|"])
     output = sorted(output)
     #print(output)
     OUTPUT_STRING=OUTPUT_STRING+("=========================================================================================\n")
@@ -602,11 +641,11 @@ if __name__ == "__main__":
     parser.add_argument("-d", help="Dataset, as the pickle file name without the extension. Default will be the dataset presented in the paper")
     parser.add_argument("-mod", nargs='+', help="If you only want to parse specific modules, list them. ex -mod 1 4 12")
     parser.add_argument("--aln", help="to input an alignment file (stockholm)", action="store_true")
-    parser.add_argument("-t", help="Score threshold for a module to be called. [0 to 35]. Default:25 ")
+    parser.add_argument("-t", help="Score threshold for a module to be called. [-5 to 5]. Default:0", default=0)
     parser.add_argument("-w", help="Window Length [50 to 300]. Default:200 ")
     parser.add_argument("-s", help="Step size between windows [10 to 200]. Default:100 ")
     parser.add_argument("-lambda", help="weight of the secondary structure weight(lambda). Default:0.2 ", dest="Lambda")
-    parser.add_argument("-o", help="Name of the output file. Default: output ")
+    parser.add_argument("-o", help="Name of the output file. Default: output ",default="output")
     parser.add_argument("--interm", help="output the best intermediate results.",action="store_true")
     #parser.add_argument("-sscons", help="Constraint level of the module-secondary structure match. Integer from 0 to 5, 0 being most constrained")
     parser.add_argument("--pretrained", help="Use this option if you have already trained all relevant models", action="store_true",dest="pretrained")
@@ -637,6 +676,8 @@ if __name__ == "__main__":
         arguments["s"] = args.s
     if args.aln:
         arguments["aln"] = True
+    else:
+        arguments["aln"] = False
     if args.o != None:
         arguments["o"] = args.o
     if args.mod != None:
@@ -662,13 +703,23 @@ if __name__ == "__main__":
 
     if args.d != None:
         dataset = args.d
+        if dataset == "3dMotifAtlas_RELIABLE":
+            dataset = reliable_dataset
+        elif dataset == "3dMotifAtlas_ALL":
+            dataset = all_dataset
     else:
-        dataset = "3dMotifAtlas_RELIABLE"
+        dataset = "all_dataset"
+
     # the default dataset is rna3dmotif
 
     # we load the modules from the dataset to get the number of modules available.
     #graphs = pickle.load(open("../models/" + dataset + "_one_of_each_graph.cPickle", "rb"))
-    graphs = unpick(dataset,"models","one_of_each_graph.cPickle")
+    #graphs = unpick(dataset,"models","one_of_each_graph.cPickle")
+
+    # updated load from json
+    with open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset +".json")) as f:
+        modules = json.load(f)
+
     if "mod" in arguments:
         modules_to_check = [int(input_number) for input_number in arguments["mod"]]
     else:
@@ -678,12 +729,53 @@ if __name__ == "__main__":
         #for i in excluded_modules:
         #    if i in modules_to_check:
         #        modules_to_check.remove(i)
-        modules_to_check = range(len(graphs))
+        modules_to_check = range(len(modules))
 
 
     #timer.sleep(5)
     # executes BayesPairing on the sequence
-    print(run_fasta(seq, modules_to_check, dataset, ss, arguments)[0])
+    if not arguments["aln"]:
+        all_svg_hits = {}
+        all_chef_ss = []
+        #run BP2 and print results
+        toPrint, seqInfo, all_results = run_fasta(seq, modules_to_check, dataset, ss, arguments)
+        print(toPrint)
+
+        outName = arguments["o"]
+        for seqCounter,inputSeqKey in enumerate(list(all_results.keys())):
+            if seqCounter>0:
+                finalName = outName+str(seqCounter)
+            else:
+                finalName = outName
+
+            #print("THE HITS")
+            #print(all_results[inputSeqKey])
+            modules_in_svg, chef_ss = bp_chefs_choice(all_results[inputSeqKey],seqInfo[seqCounter],arguments["t"],finalName)
+
+            #now we need to fill svg hits
+            svg_hits = {}
+            for hit in modules_in_svg:
+                modID, modInfo = hit
+                if modID not in svg_hits:
+                    svg_hits[modID]=[modInfo]
+                else:
+                    svg_hits[modID].append(modInfo)
+            all_svg_hits[inputSeqKey] = svg_hits
+            all_chef_ss.append(chef_ss)
+        #enter data in json
+        output_dict = {"input": seqInfo, "params": arguments, "chefs_choice_struct": all_chef_ss, "all_hits":all_results, "svg_hits" : all_svg_hits }
+    
+
+    else: #if the input is an alignment, then no SVG
+        toPrint, seqInfo, all_results = run_fasta(seq, modules_to_check, dataset, ss, arguments)
+        print(toPrint)
+        output_dict = {"input": seq, "params": arguments, "all_hits":all_results }
+
+
+    outFileName = os.path.join(CURRENT_DIRECTORY, "../output/"+arguments["o"] +".json")
+    with open(outFileName,"w+") as f:
+        json.dump(output_dict,f)
+
     END_TIME = timer.time()
     print("TOTAL TIME:",round(END_TIME-START_TIME,3))
 
