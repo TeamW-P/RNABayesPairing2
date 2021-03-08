@@ -9,8 +9,18 @@ Changes to the official branch of BayesPairing (continually updated)
 
 ## What's New
 
-* A flask layer that allows BayesPairing to be called from an endpoint.
+* A flask layer that allows BayesPairing to be called from an endpoint. This includes endpoints for file input & string input as well as another to retrieve representative graphs from a module database.
 * BayesPairing has also been dockerized, and a dockerfile is provided.
+* Three additional classes are created within core/src/pipeline.
+  * pipeline_bp: A modification of run_fasta from parse_sequences that does not save output to files
+  * pipeline_chefschoice: A modification of key methods from chefs_choice that handle SVG generation
+  * chefs_assistant: a new class that handles virtually all heavy lifting and processing of the BP service
+
+The command line program remains functional, but must now be run from the root directory instead of src. Here is a sample run: 
+
+`python3 -m core.src.parse_sequences -seq "UUUUUUAAGGAAGAUCUGGCCUUCCCACAAGGGAAGGCCAAAGAAUUUCCUU" -samplesize 1000 -t 4 -d ALL`
+
+Note that you must first set-up and activate the Anaconda environment (requirements provided in environment.yml).
 
 This package includes tools for:
 
