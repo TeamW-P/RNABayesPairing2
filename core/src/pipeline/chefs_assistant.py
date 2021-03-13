@@ -113,11 +113,11 @@ def bayespairing(input, input_file_type=None, input_file=None):
                 temp.close()
 
             # TODO: SVG as XML
-            output_dict = {"bp_input": sequences, "bp_params": input, "chefs_choice_struct": all_chef_ss,
-                           "bp_all_hits": all_results, "bp_svg_hits": all_svg_hits, "bp_svg_b64":  b64_encoded_svg}
+            output_dict = {"input": sequences, "params": input, "chefs_choice_struct": all_chef_ss,
+                           "all_hits": all_results, "svg_hits": all_svg_hits, "svg_b64":  b64_encoded_svg}
         else:  # if the input is an alignment, then no SVG
-            output_dict = {"bp_input": sequences, "bp_params": input, "chefs_choice_struct": [
-            ], "bp_all_hits": all_results,  "bp_svg_hits": {}, "bp_svg_b64":  ""}
+            output_dict = {"input": sequences, "params": input, "chefs_choice_struct": [
+            ], "all_hits": all_results,  "svg_hits": {}, "svg_b64":  ""}
 
         if (input_file):
             input_file.close()
