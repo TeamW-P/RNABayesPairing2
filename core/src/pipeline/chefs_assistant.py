@@ -146,12 +146,13 @@ def bayespairing(input, input_file_type=None, input_file=None):
         raise Exception("BayesPairing failed to produce a result: " + str(e))
 
 
-def retrieve_graphs(dataset, modules):
+def retrieve_graphs(dataset, modules, include_pdb):
     '''
     Retrieves representative graphs given a list of modules.
 
     :param dataset: the name of the dataset to use
     :param modules: a list of modules (can also be a list containing a single module)
+    :param include_pdb: an int indicating whether pdbs should be included in the graph output
     :returns: a dictionary containing a mapping of modules to their respective graphs
     '''
     if not (dataset in ALLOWED_DATASETS):
@@ -165,8 +166,10 @@ def retrieve_graphs(dataset, modules):
     for module in modules:
         graph = dataset[str(module)]["master_graph"]
         graph_dict = {}
-        graph_dict["nodes"] = list(graph["nodes"])
-        graph_dict["edges"] = list(graph["edges"])
+        graph_dict["nodes"] = graph["nodes"]
+        graph_dict["edges"] = graph["edges"]
+        if (include_pdb):
+            graph_dict["PDBs"] = dataset[str(module)]["PDBs"]
         module_graph_mapping[module] = graph_dict
 
     return module_graph_mapping

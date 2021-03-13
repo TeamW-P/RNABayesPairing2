@@ -31,11 +31,12 @@ def get_graph_per_module():
     try:
         dataset = request.form.get("dataset", default = chefs_assistant.DEFAULT_DATASET, type = str)
         modules = request.form.get("modules")
+        include_pdb = request.form.get("pdb", default = 1, type = int)
         if (not modules):
             abort(400, "Did not receive any modules to fetch graphs for.")
         modules = eval(modules)
 
-        module_graph_mapping = chefs_assistant.retrieve_graphs(dataset, modules)
+        module_graph_mapping = chefs_assistant.retrieve_graphs(dataset, modules, include_pdb)
 
         return jsonify({"graphs": module_graph_mapping})
     except ValueError as e:
