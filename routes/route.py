@@ -9,6 +9,7 @@ import atexit
 import tempfile
 import base64
 import json
+import ast
 routes = Blueprint("routes", __name__)
 # TODO: exit handling
 # atexit.register(exit)
@@ -34,7 +35,7 @@ def get_graph_per_module():
         include_pdb = request.form.get("pdb", default = 1, type = int)
         if (not modules):
             abort(400, "Did not receive any modules to fetch graphs for.")
-        modules = eval(modules)
+        modules = ast.literal_eval(modules)
 
         module_graph_mapping = chefs_assistant.retrieve_graphs(dataset, modules, include_pdb)
 

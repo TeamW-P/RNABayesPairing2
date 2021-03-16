@@ -1,6 +1,7 @@
 import os
 import json
 import base64
+import ast
 from . import pipeline_bp as bp
 from . import pipeline_chefschoice as chefs_choice
 
@@ -65,7 +66,7 @@ def bayespairing(input, input_file_type=None, input_file=None):
 
         if (input.get("modules")):
             modules_to_check = [int(input_number)
-                                for input_number in eval(input.get("modules"))]
+                                for input_number in ast.literal_eval(input.get("modules"))]
         else:
             # we load the modules from the dataset to get the number of modules available.
             try:
