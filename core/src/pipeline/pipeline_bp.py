@@ -143,7 +143,7 @@ def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_
                 sequences.append((seq, ugseq))
             # print("SEQUENCES",len(sequences))
 
-            if len(sequences[0]) < 3000:
+            if len(sequences[0]) < 250:
                 maxs = run_BP(sequences, ss, modules_to_parse, dataset, "NONE", aln=aln, t=t, samplesize=samplesize,
                               pretrained=pretrained, Lambda=Lambda, Theta=Theta, Delta=Delta, fuzzy=fuzzy, verbose=verbose, first_run=first_run)
                 first_run = False
@@ -152,7 +152,7 @@ def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_
                     print(maxs)
 
             else:
-                all_maxes = []
+                all_maxes = {}
                 index = 0
                 while index + w < len(seq):
                     if verbose:

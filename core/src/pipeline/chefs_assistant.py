@@ -128,10 +128,10 @@ def bayespairing(input, input_file_type=None, input_file=None):
         motif_graphs = {}
         # get representative graphs for motifs from chefschoice, this is as a result not possible for alignments yet
         if (get_graphs and not is_alignment):
+            include_pdb = input.get("pdb", default=1, type=int)
             for sequence in all_svg_hits.keys():
                 module_ids = list(all_svg_hits[sequence].keys())
-                print(module_ids)
-                graphs = retrieve_graphs(dataset, module_ids)
+                graphs = retrieve_graphs(dataset, module_ids, include_pdb)
                 motif_graphs[sequence] = graphs
 
         output_dict["motif_graphs"] = motif_graphs

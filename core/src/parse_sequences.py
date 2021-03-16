@@ -73,7 +73,6 @@ def run_BP(seq, ss, modules_to_parse, dataset, left_out, aln=False, t=-5, sample
     siblings = {int(k): v["siblings"] for k, v in module_siblings.items()}
 
     # instead of mapping the dict to the sibling dict, pass the dataset through and process after
-
     noSiblings = process_siblings(return_dict,siblings)
     
     return noSiblings
@@ -133,8 +132,7 @@ def get_stats(prediction_scores,modules_to_parse,threshold=-5):
         for module in window:
             scored_positions[module] = []
             #print("SCANNING",module,window[module])
-
-                
+            
 
             mod_number = module
             if len(window[module])>0:
@@ -143,7 +141,6 @@ def get_stats(prediction_scores,modules_to_parse,threshold=-5):
                     #print("admissible score")
                     scored_positions[module].append(window[module][0][1])
                     hit_dict[module]=True
-
         for mod in hit_dict:
             if hit_dict[mod]:
                 n_hits[mod]+=1
@@ -254,7 +251,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
         first_run=arguments["init"]
     else:
         first_run= False
-            
+        
     if ".st" in input.lower():
         if verbose:
             print("Alignment file detected, scanning alignment", input)
@@ -348,7 +345,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                 sequences.append((seq,ugseq))
             #print("SEQUENCES",len(sequences))
 
-            if len(sequences[0]) < 3000:
+            if len(sequences[0]) < 250:
                 maxs = run_BP(sequences, ss, modules_to_parse, dataset, "NONE", aln= aln, t= t, samplesize=samplesize, pretrained=pretrained, Lambda=Lambda, Theta=Theta, Delta=Delta, fuzzy=fuzzy, verbose=verbose, first_run=first_run)
                 first_run=False
                 prediction_scores[id] = maxs
@@ -356,7 +353,7 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
                     print(maxs)
 
             else:
-                all_maxes = []
+                all_maxes = {}
                 index = 0
                 while index + w < len(seq):
                     if verbose:
@@ -561,7 +558,6 @@ def run_fasta(input, modules_to_parse, dataset, ss="", arguments={}):
             fOUTPUT=fOUTPUT+present_output(all_maxes, t)+"\n"
             prediction_scores = {"input_seq":all_maxes}
             pickle.dump(prediction_scores,open(os.path.join(CURRENT_DIRECTORY, "../output/"+o+".pickle"),"wb"))
-
     return fOUTPUT,sequences,prediction_scores
 
 
@@ -709,7 +705,6 @@ if __name__ == "__main__":
             dataset = ALL
     else:
         dataset = "ALL"
-
     # the default dataset is rna3dmotif
 
     # we load the modules from the dataset to get the number of modules available.
@@ -741,6 +736,7 @@ if __name__ == "__main__":
         toPrint, seqInfo, all_results = run_fasta(seq, modules_to_check, dataset, ss, arguments)
         print(toPrint)
 
+        #generate SVG
         outName = arguments["o"]
         for seqCounter,inputSeqKey in enumerate(list(all_results.keys())):
             if seqCounter>0:
@@ -751,6 +747,7 @@ if __name__ == "__main__":
             #print("THE HITS")
             #print(all_results[inputSeqKey])
             modules_in_svg, chef_ss = bp_chefs_choice(all_results[inputSeqKey],seqInfo[seqCounter],arguments["t"],finalName)
+
 
             #now we need to fill svg hits
             svg_hits = {}
@@ -775,6 +772,9 @@ if __name__ == "__main__":
     outFileName = os.path.join(CURRENT_DIRECTORY, "../output/"+arguments["o"] +".json")
     with open(outFileName,"w+") as f:
         json.dump(output_dict,f)
+
+
+
 
     END_TIME = timer.time()
     print("TOTAL TIME:",round(END_TIME-START_TIME,3))
