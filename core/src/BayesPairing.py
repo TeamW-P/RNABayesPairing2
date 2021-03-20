@@ -482,13 +482,14 @@ def parse_sequence(seq, modules, ss, dataset, BNs, t=-10, samplesize=20000, Lamb
             #print(seq)
             #print(struct)
             if not str(r.node.positions) in modules_predicted[r.module.ID]:
+                #print("about to score",r.seq, r.rotation, r.pos, r.module.nodes)
                 r.eval(fold_compound=fc)
                 #print("SCORED MODULE",r.module.ID, r.seq, r.pos, r.score)
                 #print("PASSING THRESHOLD",r.score,t)
                 if r.score > t:
                     #print(r.module.ID, r.seq, r.pos, r.score)
                     #print("Adding module match to results")
-                    modules_predicted[r.module.ID][str(r.node.positions)] = [r.seq, r.pos,  prob,r.node.positions, r.score]
+                    modules_predicted[r.module.ID][str(r.node.positions)] = [r.seq, r.pos,  prob,r.node.positions, r.score, r.mapping]
                     
             else:
                 #print("ADDING PREDICTION TO OTHERS",r.pos,  modules_predicted[r.module.ID])

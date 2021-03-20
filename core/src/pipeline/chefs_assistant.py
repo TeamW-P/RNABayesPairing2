@@ -90,7 +90,7 @@ def bayespairing(input, input_file_type=None, input_file=None):
             # generate SVG
             for seqCounter, inputSeqKey in enumerate(list(all_results.keys())):
                 (modules_in_svg, chef_ss), temp = chefs_choice.bp_chefs_choice(
-                    all_results[inputSeqKey], sequences[seqCounter], score_threshold)
+                    all_results[inputSeqKey], sequences[seqCounter], float(score_threshold))
 
                 # now we need to fill svg hits
                 svg_hits = {}

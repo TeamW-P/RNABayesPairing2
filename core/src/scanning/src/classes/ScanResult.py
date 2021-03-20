@@ -55,10 +55,10 @@ class ExactScanResult:
         #print("FOUND SEQUENCE:",self.seq)
 
         #print("UNROTATED GAPS",self.module.gaps_per_strand)
-        if rotation:
-            self.rotate(rotation)
+        #if rotation:
+            #self.rotate(rotation)
         #print("LEN POS",self.pos,"LEN SEQ",self.seq, "ROTATION",rotation)
-
+        #print("DONE ROTATION, CURRENT SEQUENCE", self.seq)
 
         #TODO : need to think about adjusting POSITIONS to gaps
         self.gaps = self.module.gaps_per_strand
@@ -66,6 +66,8 @@ class ExactScanResult:
         
         #print("PREFIX SEQUENCES",self.seq)
         self.reintegrate_module_gaps_to_sse_sequence_and_positions()
+        #print("Reintegrated module graps, current seq", self.seq)
+        self.mapping = {}
 
 
 
@@ -99,8 +101,9 @@ class ExactScanResult:
     def reintegrate_module_gaps_to_sse_sequence_and_positions(self):
         #print("REGAPPING MODULE", self.module.ss, self.module.stackings, self.gaps,self.seq,self.pos)
 
-        positions = self.pos
-        gaps = self.rotate_list(self.gaps)
+        positions = self.rotate_list(self.pos)
+        #gaps = self.rotate_list(self.gaps) this does not help, the gaps shouldnt rotate on the module
+        gaps = self.gaps
         seq = self.seq
 
         new_seq = ""
@@ -113,6 +116,7 @@ class ExactScanResult:
                         new_seq += nuc
         else:
             for strand,subseq in enumerate(self.rotate_list(seq.split("&"))):
+            #for strand,subseq in enumerate(seq.split("&")):
                 #print("STRAND",strand,"GAPS",gaps, seq, seq.split("&"))
                 if not gaps[strand]:
                     new_seq+=subseq
@@ -136,7 +140,7 @@ class ExactScanResult:
                         new_strand.append(pos)
                 new_pos.append(new_strand)
         self.module_positions = new_pos
-        #print("POST REGAPPED SEQUENCE:",new_pos,new_seq)
+        #print("POST REGAPPED SEQUENCE:",new_pos,new_seq, gaps)
         #still on tryout.. does it affect anything else to name pos here immediately?
         self.pos = new_pos
 
@@ -147,7 +151,7 @@ class ExactScanResult:
         """
 
         #TODO: need to make sure the gaps are managed when scoring the sequence, specifically through rotation
-        #print("info",self.module.stackings,self.module.ID,self.module.n_nodes,self.seq)
+        #print("info eval",self.rotation,self.pos,self.module.ID,self.module.n_nodes,self.seq)
         try:
             return self.score
         except:
@@ -161,6 +165,7 @@ class ExactScanResult:
                     return -1
                # print(self.module.ID,self.node,self.pos)
                 score = self.module.eval(self.seq)[0]
+                self.mapping = self.module.mapping_from_sequence(self.seq)
                 #print("COMPUTING SEQUENCE SCORE",score, self.pos, self.seq)
 
                 self.score = score
@@ -182,6 +187,8 @@ class ExactScanResult:
                     else:
                         #print("Candidate scoring", tmp_seq,self.module.eval(tmp_seq)[0] )
                         total_score+= self.module.eval(tmp_seq)[0]
+                        if len(self.mapping)==0:
+                            self.mapping = self.module.mapping_from_sequence(tmp_seq)
                 mean_score = total_score/(len(sequences)-gapped_cand)
                 # print("score for this alignment:",mean_score)
                 self.score = mean_score

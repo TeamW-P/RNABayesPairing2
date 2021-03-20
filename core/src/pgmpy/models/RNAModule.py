@@ -325,7 +325,9 @@ class RNAModule(BayesianModel):
 
 
     def eval(self, sequence):
+        #print('testing seq against nodes',sequence,self.nodes())
         candidate = self.candidate_from_sequence(sequence)
+        #print('testing seq against nodes',sequence,self.nodes(),candidate)
         if candidate is None:
             return [-100, None]
         # in the bayesnet object, the nucleotide are stored as number
@@ -342,6 +344,7 @@ class RNAModule(BayesianModel):
             this_node_evidence_dict = {}
             for anc in ancestors_of_node:
                 this_node_evidence_dict[anc] = candidate[anc]
+                #print("evaluating",node, candidate[node], this_node_evidence_dict)
             node_probability = math.log(compute_probability(self, node, candidate[node], this_node_evidence_dict))
             node_probabilities.append(node_probability)
             module_probability = module_probability + node_probability
@@ -399,6 +402,19 @@ class RNAModule(BayesianModel):
             candidate[node] = values.index(sequence[ind])
         return candidate
 
+    def mapping_from_sequence(self, sequence):
+        #print("SCORING CANDIDATE", self.ID, self.nodes(),sequence, "GAPS",self.gaps)
+        #takes as input a sequence with stars, and outputs a dictionary of node values
+        candidate = {}
+        if "T" in sequence:
+            sequence.replace("T","U")
+
+        sequence = list(sequence)
+        sequence = [i for i in sequence if i.isalpha()]
+  
+        for ind,node in enumerate(self.nodes(data=False)):
+            candidate[node] = sequence[ind]
+        return candidate
 
     def eval_constraint_folding(self,seq_score,full_seq,positions,rotated_ss, rotated_gaps, fc):
         #print('testing candidate with constraint folding',rotated_ss, rotated_ss.split("*"))

@@ -746,8 +746,7 @@ if __name__ == "__main__":
 
             #print("THE HITS")
             #print(all_results[inputSeqKey])
-            modules_in_svg, chef_ss = bp_chefs_choice(all_results[inputSeqKey],seqInfo[seqCounter],arguments["t"],finalName)
-
+            modules_in_svg, chef_ss = bp_chefs_choice(all_results[inputSeqKey],seqInfo[seqCounter],float(arguments["t"]),finalName)
 
             #now we need to fill svg hits
             svg_hits = {}
