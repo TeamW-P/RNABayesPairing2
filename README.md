@@ -15,6 +15,7 @@ Changes to the official branch of BayesPairing (continually updated)
   * pipeline_bp: A modification of run_fasta from parse_sequences that does not save output to files
   * pipeline_chefschoice: A modification of key methods from chefs_choice that handle SVG generation
   * chefs_assistant: a new class that handles virtually all heavy lifting and processing of the BP service
+* Testing! Located within the tests directory! Because BP results are non-deterministic, these mainly validate that results are successful or a failure and whether keys exist, not the exact contents of a specific result.
 
 The command line program remains functional, but must now be run from the root directory instead of src. Here is a sample run: 
 
