@@ -4,6 +4,7 @@ import base64
 import ast
 from . import pipeline_bp as bp
 from . import pipeline_chefschoice as chefs_choice
+import xml.etree.ElementTree as ET
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
 ALLOWED_EXTENSIONS = {"fa", "fasta", "sl"}
@@ -107,18 +108,20 @@ def bayespairing(input, input_file_type=None, input_file=None):
                 # once ready to receive all SVGs, this is a trivial fix
                 if (seqCounter == 0):
                     with open(temp.name, "rb") as image_file:
-                        b64_encoded_svg = base64.b64encode(
-                            image_file.read()).decode("utf-8")
-
+                        image_file.seek(0)
+                        svg = ((image_file.read()).decode("utf-8"))
+                    #svg = ET.parse(temp.name).getroot()
+                    #svg = ET.tostring(svg, encoding='unicode', method='xml')
+             
                 # destroy the temporarily stored svg
                 temp.close()
 
             # TODO: SVG as XML
             output_dict = {"input": sequences, "params": input, "chefs_choice_struct": all_chef_ss,
-                           "all_hits": all_results, "svg_hits": all_svg_hits, "svg_b64":  b64_encoded_svg}
+                           "all_hits": all_results, "svg_hits": all_svg_hits, "svg" : svg}
         else:  # if the input is an alignment, then no SVG
             output_dict = {"input": sequences, "params": input, "chefs_choice_struct": [
-            ], "all_hits": all_results,  "svg_hits": {}, "svg_b64":  ""}
+            ], "all_hits": all_results}
 
         if (input_file):
             input_file.close()
@@ -126,16 +129,16 @@ def bayespairing(input, input_file_type=None, input_file=None):
             raise Exception(
                 "BayesPairing failed to produce output. Please ensure sure all input variables are valid. If a fasta or stockholm file were provided, they were preserved.")
 
-        motif_graphs = {}
         # get representative graphs for motifs from chefschoice, this is as a result not possible for alignments yet
         if (get_graphs and not is_alignment):
+            motif_graphs = {}
             include_pdb = input.get("pdb", default=1, type=int)
             for sequence in all_svg_hits.keys():
                 module_ids = list(all_svg_hits[sequence].keys())
                 graphs = retrieve_graphs(dataset, module_ids, include_pdb)
                 motif_graphs[sequence] = graphs
+            output_dict["motif_graphs"] = motif_graphs
 
-        output_dict["motif_graphs"] = motif_graphs
         return output_dict
     except ValueError as e:
         if (input_file):
