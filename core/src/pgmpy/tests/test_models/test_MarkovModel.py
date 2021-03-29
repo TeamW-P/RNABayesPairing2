@@ -3,12 +3,12 @@ import unittest
 import networkx as nx
 import numpy as np
 
-from src.pgmpy.factors.discrete import DiscreteFactor, factor_product
-from pgmpy.independencies import Independencies
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range
-from pgmpy.models import BayesianModel, MarkovModel, FactorGraph
-from pgmpy.tests import help_functions as hf
+from ...factors.discrete import DiscreteFactor, factor_product
+from ...independencies import Independencies
+from ...extern import six
+from ...extern.six.moves import range
+from ...models import BayesianModel, MarkovModel, FactorGraph
+from .. import help_functions as hf
 
 
 class TestMarkovModelCreation(unittest.TestCase):

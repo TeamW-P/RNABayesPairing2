@@ -3,10 +3,10 @@ import unittest
 import numpy as np
 import numpy.testing as np_test
 
-from src.pgmpy.factors.discrete import DiscreteFactor, TabularCPD
-from pgmpy.models import BayesianModel
-from pgmpy.inference import Inference
-from pgmpy.inference import VariableElimination
+from ...factors.discrete import DiscreteFactor, TabularCPD
+from ...models import BayesianModel
+from ...inference import Inference
+from ...inference import VariableElimination
 
 
 class TestStateNameInit(unittest.TestCase):

@@ -3,8 +3,8 @@ import unittest
 from pandas import DataFrame
 from numpy import NaN
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.estimators import ParameterEstimator
+from ...models import BayesianModel
+from ...estimators import ParameterEstimator
 
 
 class TestParameterEstimator(unittest.TestCase):

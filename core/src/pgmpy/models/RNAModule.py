@@ -22,6 +22,8 @@ import networkx as nx
 from matplotlib import pyplot as plt
 from collections import namedtuple
 import math
+
+# TO RUN TESTS, USE THIS IMPORT INSTEAD
 from ... import testSS
 
 

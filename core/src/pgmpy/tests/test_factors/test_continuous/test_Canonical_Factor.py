@@ -3,8 +3,8 @@ import unittest
 import numpy as np
 import numpy.testing as np_test
 
-from src.pgmpy.factors.distributions import GaussianDistribution as JGD
-from src.pgmpy.factors.continuous import CanonicalDistribution
+from ....factors.distributions import GaussianDistribution as JGD
+from ....factors.continuous import CanonicalDistribution
 
 
 class TestCanonicalFactor(unittest.TestCase):

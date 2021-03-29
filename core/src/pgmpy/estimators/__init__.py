@@ -1,4 +1,4 @@
-from pgmpy.estimators import ConstraintBasedEstimator
+from . import ConstraintBasedEstimator
 
 __all__ = ['BaseEstimator',
            'ParameterEstimator', 'MaximumLikelihoodEstimator', 'BayesianEstimator',

@@ -4,11 +4,11 @@ from collections import defaultdict
 
 import numpy as np
 
-from pgmpy.models import BayesianModel
-from pgmpy.models import MarkovModel
-from src.pgmpy.factors.discrete import DiscreteFactor
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.inference import Inference
+from ...models import BayesianModel
+from ...models import MarkovModel
+from ...factors.discrete import DiscreteFactor
+from ...factors.discrete import TabularCPD
+from ...inference import Inference
 
 
 class TestInferenceBase(unittest.TestCase):

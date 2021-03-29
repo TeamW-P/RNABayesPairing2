@@ -1,9 +1,9 @@
 import unittest
 
 from mock import MagicMock, patch
-from src.pgmpy.factors.discrete import DiscreteFactor, TabularCPD, State
-from pgmpy.models import BayesianModel, MarkovModel
-from pgmpy.sampling import BayesianModelSampling, GibbsSampling
+from ...factors.discrete import DiscreteFactor, TabularCPD, State
+from ...models import BayesianModel, MarkovModel
+from ...sampling import BayesianModelSampling, GibbsSampling
 
 
 class TestBayesianModelSampling(unittest.TestCase):

@@ -1,4 +1,5 @@
 from itertools import combinations
+import os
 
 import numpy as np
 from pyparsing import alphas, Combine, Literal, Optional, nums, Word
@@ -7,6 +8,7 @@ from ..models import BayesianModel, MarkovModel
 from ..factors.discrete import TabularCPD, DiscreteFactor
 from ..extern.six.moves import map, range
 
+CURRENT_DIRECTORY = os.path.dirname(__file__)
 
 class UAIReader(object):
     """
@@ -33,7 +35,7 @@ class UAIReader(object):
         http://graphmod.ics.uci.edu/uai08/FileFormat
         """
         if path:
-            data = open(path)
+            data = open(os.path.join(CURRENT_DIRECTORY + "/../..", path))
             self.network = data.read()
         elif string:
             self.network = string

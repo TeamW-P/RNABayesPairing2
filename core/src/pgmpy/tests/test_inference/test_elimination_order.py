@@ -3,8 +3,8 @@ from unittest import TestCase
 import numpy as np
 import pandas as pd
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.inference.EliminationOrder import (BaseEliminationOrder, WeightedMinFill,
+from ...models import BayesianModel
+from ...inference.EliminationOrder import (BaseEliminationOrder, WeightedMinFill,
                                               MinNeighbours, MinWeight, MinFill)
 
 

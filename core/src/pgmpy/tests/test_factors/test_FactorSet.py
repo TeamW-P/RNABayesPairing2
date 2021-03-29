@@ -1,8 +1,8 @@
 import unittest
 
-from pgmpy.extern.six.moves import filter, range
-from pgmpy.factors import FactorSet
-from src.pgmpy.factors.discrete import DiscreteFactor
+from ...extern.six.moves import filter, range
+from ...factors import FactorSet
+from ...factors.discrete import DiscreteFactor
 
 
 class TestFactorSet(unittest.TestCase):

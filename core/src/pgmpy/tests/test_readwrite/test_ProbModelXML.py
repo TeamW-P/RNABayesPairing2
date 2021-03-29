@@ -9,11 +9,11 @@ import json
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.readwrite import ProbModelXMLReader, ProbModelXMLWriter, get_probmodel_data
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.extern.six.moves import range
-from pgmpy.extern import six
+from ...readwrite import ProbModelXMLReader, ProbModelXMLWriter, get_probmodel_data
+from ...models import BayesianModel
+from ...factors.discrete import TabularCPD
+from ...extern.six.moves import range
+from ...extern import six
 
 
 try:

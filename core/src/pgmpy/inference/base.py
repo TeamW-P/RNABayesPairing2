@@ -4,7 +4,7 @@ from collections import defaultdict
 from itertools import chain
 
 from ..models import BayesianModel
-from ..modelsimport RNAModule
+from ..models import RNAModule
 from ..models import MarkovModel
 from ..models import FactorGraph
 from ..models import JunctionTree

@@ -3,10 +3,10 @@ import unittest
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.readwrite import BIFReader, BIFWriter
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.extern.six.moves import map, range
+from ...readwrite import BIFReader, BIFWriter
+from ...models import BayesianModel
+from ...factors.discrete import TabularCPD
+from ...extern.six.moves import map, range
 
 
 class TestBIFReader(unittest.TestCase):

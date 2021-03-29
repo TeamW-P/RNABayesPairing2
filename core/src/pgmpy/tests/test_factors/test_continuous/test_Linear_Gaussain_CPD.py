@@ -2,7 +2,7 @@ import unittest
 
 import numpy.testing as np_test
 
-from src.pgmpy.factors.continuous import LinearGaussianCPD
+from ....factors.continuous import LinearGaussianCPD
 
 
 class TestLGCPD(unittest.TestCase):

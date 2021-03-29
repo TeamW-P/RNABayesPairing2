@@ -2,8 +2,8 @@
 
 import unittest
 
-from src.pgmpy.base import DirectedGraph
-import pgmpy.tests.help_functions as hf
+from ...base import DirectedGraph
+from .. import help_functions as hf
 
 
 class TestDirectedGraphCreation(unittest.TestCase):

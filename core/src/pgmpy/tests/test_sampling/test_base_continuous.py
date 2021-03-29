@@ -2,8 +2,8 @@ import unittest
 
 import numpy as np
 
-from src.pgmpy.factors.distributions import GaussianDistribution as JGD
-from pgmpy.sampling import LeapFrog, ModifiedEuler, GradLogPDFGaussian
+from ...factors.distributions import GaussianDistribution as JGD
+from ...sampling import LeapFrog, ModifiedEuler, GradLogPDFGaussian
 
 
 class TestGradLogPDFGaussian(unittest.TestCase):

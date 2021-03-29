@@ -2,9 +2,9 @@ import unittest
 
 import numpy as np
 
-import pgmpy.tests.help_functions as hf
-from pgmpy.models import DynamicBayesianNetwork
-from src.pgmpy.factors.discrete import TabularCPD
+from .. import help_functions as hf
+from ...models import DynamicBayesianNetwork
+from ...factors.discrete import TabularCPD
 
 
 class TestDynamicBayesianNetworkCreation(unittest.TestCase):

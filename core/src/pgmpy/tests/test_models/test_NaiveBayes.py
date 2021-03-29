@@ -4,9 +4,9 @@ import networkx as nx
 import pandas as pd
 import numpy as np
 
-from pgmpy.models import NaiveBayes
-from pgmpy.independencies import Independencies
-from pgmpy.extern import six
+from ...models import NaiveBayes
+from ...independencies import Independencies
+from ...extern import six
 
 
 class TestBaseModelCreation(unittest.TestCase):

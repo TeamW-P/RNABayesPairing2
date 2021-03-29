@@ -5,11 +5,11 @@ import pandas as pd
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.models import BayesianModel, MarkovModel
-import pgmpy.tests.help_functions as hf
-from src.pgmpy.factors.discrete import TabularCPD, JointProbabilityDistribution, DiscreteFactor
-from pgmpy.independencies import Independencies
-from pgmpy.estimators import BayesianEstimator, BaseEstimator, MaximumLikelihoodEstimator
+from ...models import BayesianModel, MarkovModel
+from .. import help_functions as hf
+from ...factors.discrete import TabularCPD, JointProbabilityDistribution, DiscreteFactor
+from ...independencies import Independencies
+from ...estimators import BayesianEstimator, BaseEstimator, MaximumLikelihoodEstimator
 
 
 class TestBaseModelCreation(unittest.TestCase):

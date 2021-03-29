@@ -308,7 +308,7 @@ class JointProbabilityDistribution(DiscreteFactor):
         >>> bayesian_model.edges()
         [('x1', 'x3'), ('x2', 'x3')]
         """
-        from pgmpy.models import BayesianModel
+        from ...models import BayesianModel
 
         def get_subsets(u):
             for r in range(len(u) + 1):
@@ -358,7 +358,7 @@ class JointProbabilityDistribution(DiscreteFactor):
         >>> JPD.is_imap(bm)
         True
         """
-        from pgmpy.models import BayesianModel
+        from ...models import BayesianModel
         if not isinstance(model, BayesianModel):
             raise TypeError("model must be an instance of BayesianModel")
         factors = [cpd.to_factor() for cpd in model.get_cpds()]

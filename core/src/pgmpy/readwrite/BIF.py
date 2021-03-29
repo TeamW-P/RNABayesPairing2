@@ -5,7 +5,7 @@ import numpy
 from pyparsing import Word, alphanums, Suppress, Optional, CharsNotIn, Group, nums, ZeroOrMore, OneOrMore,\
     cppStyleComment, printables
 
-from . import BayesianModel
+from ..models import BayesianModel
 from ..factors.discrete import TabularCPD
 from ..extern.six.moves import map, range
 

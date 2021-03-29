@@ -4,10 +4,10 @@ import warnings
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.extern import six
-from src.pgmpy.readwrite import XMLBeliefNetwork
+from ...models import BayesianModel
+from ...factors.discrete import TabularCPD
+from ...extern import six
+from ...readwrite import XMLBeliefNetwork
 
 
 try:

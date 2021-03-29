@@ -2,9 +2,9 @@ import unittest
 
 import numpy as np
 
-from src.pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.models import JunctionTree
-from pgmpy.tests import help_functions as hf
+from ...factors.discrete import DiscreteFactor
+from ...models import JunctionTree
+from ...tests import help_functions as hf
 
 
 class TestJunctionTreeCreation(unittest.TestCase):

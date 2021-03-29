@@ -2,8 +2,8 @@ import unittest
 
 import numpy as np
 
-from src.pgmpy.inference.mplp import Mplp
-from pgmpy.readwrite import UAIReader
+from ...inference.mplp import mplp
+from ...readwrite import UAIReader
 
 
 class TestMplp(unittest.TestCase):

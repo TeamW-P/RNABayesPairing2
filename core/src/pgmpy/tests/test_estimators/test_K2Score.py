@@ -2,8 +2,8 @@ import unittest
 
 import pandas as pd
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.estimators import K2Score
+from ...models import BayesianModel
+from ...estimators import K2Score
 
 
 class TestK2Score(unittest.TestCase):

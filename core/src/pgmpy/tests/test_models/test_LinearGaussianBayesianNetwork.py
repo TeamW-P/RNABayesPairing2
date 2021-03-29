@@ -3,9 +3,9 @@ import unittest
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.factors.continuous import LinearGaussianCPD
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.models import LinearGaussianBayesianNetwork
+from ...factors.continuous import LinearGaussianCPD
+from ...factors.discrete import TabularCPD
+from ...models import LinearGaussianBayesianNetwork
 
 
 class TestLGBNMethods(unittest.TestCase):

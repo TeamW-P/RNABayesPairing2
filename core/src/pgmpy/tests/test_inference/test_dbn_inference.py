@@ -3,9 +3,9 @@ import unittest
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.inference import DBNInference
-from pgmpy.models import DynamicBayesianNetwork
-from src.pgmpy.factors.discrete import TabularCPD
+from ...inference import dbn_inference
+from ...models import DynamicBayesianNetwork
+from ...factors.discrete import TabularCPD
 
 
 # The sample Dynamic Bayesian Network is taken from the following paper:-

@@ -3,8 +3,8 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from src.pgmpy.estimators import ExhaustiveSearch, BdeuScore, BicScore
-from pgmpy.extern import six
+from ...estimators import ExhaustiveSearch, BdeuScore, BicScore
+from ...extern import six
 
 
 class TestBaseEstimator(unittest.TestCase):

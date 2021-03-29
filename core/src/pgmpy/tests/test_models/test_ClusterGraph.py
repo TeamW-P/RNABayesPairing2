@@ -2,11 +2,11 @@ import unittest
 
 import numpy as np
 
-from pgmpy.models import ClusterGraph
-from pgmpy.tests import help_functions as hf
-from src.pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range
+from ...models import ClusterGraph
+from .. import help_functions as hf
+from ...factors.discrete import DiscreteFactor
+from ...extern import six
+from ...extern.six.moves import range
 
 
 class TestClusterGraphCreation(unittest.TestCase):

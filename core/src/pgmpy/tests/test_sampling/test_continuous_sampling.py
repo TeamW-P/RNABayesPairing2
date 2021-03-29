@@ -2,8 +2,8 @@ import unittest
 
 import numpy as np
 
-from src.pgmpy.factors.distributions import GaussianDistribution as JGD
-from pgmpy.sampling import (HamiltonianMC as HMC, HamiltonianMCDA as HMCda, GradLogPDFGaussian, NoUTurnSampler as NUTS,
+from ...factors.distributions import GaussianDistribution as JGD
+from ...sampling import (HamiltonianMC as HMC, HamiltonianMCDA as HMCda, GradLogPDFGaussian, NoUTurnSampler as NUTS,
                             NoUTurnSamplerDA as NUTSda)
 
 

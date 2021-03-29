@@ -2,8 +2,8 @@ import unittest
 
 import pandas as pd
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.estimators import BdeuScore
+from ...models import BayesianModel
+from ...estimators import BdeuScore
 
 
 class TestBdeuScore(unittest.TestCase):

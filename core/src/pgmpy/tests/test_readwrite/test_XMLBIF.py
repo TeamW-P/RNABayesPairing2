@@ -5,9 +5,9 @@ import warnings
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.readwrite import XMLBIFReader, XMLBIFWriter
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
+from ...readwrite import XMLBIFReader, XMLBIFWriter
+from ...models import BayesianModel
+from ...factors.discrete import TabularCPD
 
 
 try:

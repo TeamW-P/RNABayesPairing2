@@ -5,7 +5,7 @@ import numpy.testing as np_test
 from scipy.special import beta
 from scipy.stats import multivariate_normal
 
-from src.pgmpy.factors.distributions import CustomDistribution
+from ....factors.distributions import CustomDistribution
 
 
 class TestCustomDistribution(unittest.TestCase):

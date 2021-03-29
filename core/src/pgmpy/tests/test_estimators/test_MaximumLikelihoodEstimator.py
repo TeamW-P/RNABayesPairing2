@@ -3,9 +3,9 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from pgmpy.models import BayesianModel
-from pgmpy.estimators import MaximumLikelihoodEstimator
-from src.pgmpy.factors.discrete import TabularCPD
+from ...models import BayesianModel
+from ...estimators import MaximumLikelihoodEstimator
+from ...factors.discrete import TabularCPD
 
 
 class TestMLE(unittest.TestCase):

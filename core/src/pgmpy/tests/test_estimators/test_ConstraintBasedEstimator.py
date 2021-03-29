@@ -3,10 +3,10 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from pgmpy.estimators import ConstraintBasedEstimator
-from pgmpy.independencies import Independencies
-from pgmpy.models import BayesianModel
-from src.pgmpy.base import DirectedGraph, UndirectedGraph
+from ...estimators import ConstraintBasedEstimator
+from ...independencies import Independencies
+from ...models import BayesianModel
+from ...base import DirectedGraph, UndirectedGraph
 
 
 class TestConstraintBasedEstimator(unittest.TestCase):

@@ -2,10 +2,10 @@ import unittest
 
 import numpy as np
 
-from pgmpy.readwrite import UAIReader, UAIWriter
-from pgmpy.models import BayesianModel, MarkovModel
-from src.pgmpy.factors.discrete import TabularCPD, DiscreteFactor
-from pgmpy.extern.six.moves import map
+from ...readwrite import UAIReader, UAIWriter
+from ...models import BayesianModel, MarkovModel
+from ...factors.discrete import TabularCPD, DiscreteFactor
+from ...extern.six.moves import map
 
 
 class TestUAIReader(unittest.TestCase):

@@ -3,13 +3,13 @@ import unittest
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.inference import VariableElimination
-from pgmpy.inference import BeliefPropagation
-from pgmpy.models import BayesianModel, MarkovModel
-from pgmpy.models import JunctionTree
-from src.pgmpy.factors.discrete import TabularCPD
-from src.pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.extern.six.moves import range
+from ...inference import VariableElimination
+from ...inference import BeliefPropagation
+from ...models import BayesianModel, MarkovModel
+from ...models import JunctionTree
+from ...factors.discrete import TabularCPD
+from ...factors.discrete import DiscreteFactor
+from ...extern.six.moves import range
 
 
 class TestVariableElimination(unittest.TestCase):

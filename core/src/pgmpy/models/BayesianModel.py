@@ -14,7 +14,7 @@ from ..factors.discrete import TabularCPD, JointProbabilityDistribution, Discret
 from ..independencies import Independencies
 from ..extern import six
 from ..extern.six.moves import range, reduce
-from ..models.MarkovModel import MarkovModel
+from .MarkovModel import MarkovModel
 
 
 class BayesianModel(DirectedGraph):
@@ -683,8 +683,8 @@ class BayesianModel(DirectedGraph):
         Examples
         --------
         >>> import pandas as pd
-        >>> from pgmpy.models import BayesianModel
-        >>> from src.pgmpy.estimators import MaximumLikelihoodEstimator
+        >>> from . import BayesianModel
+        >>> from ..estimators import MaximumLikelihoodEstimator
         >>> data = pd.DataFrame(data={'A': [0, 0, 1], 'B': [0, 1, 0], 'C': [1, 1, 0]})
         >>> model = BayesianModel([('A', 'C'), ('B', 'C')])
         >>> model.fit(data)
@@ -694,7 +694,7 @@ class BayesianModel(DirectedGraph):
         <TabularCPD representing P(C:2 | A:2, B:2) at 0x7fb98a7b1f98>]
         """
 
-        from src.pgmpy.estimators import MaximumLikelihoodEstimator, BaseEstimator
+        from ..estimators import MaximumLikelihoodEstimator, BaseEstimator
 
         if estimator is None:
             estimator = MaximumLikelihoodEstimator
@@ -746,7 +746,7 @@ class BayesianModel(DirectedGraph):
         998 0
         999 0
         """
-        from src.pgmpy.inference import VariableElimination
+        from ..inference import VariableElimination
 
         if set(data.columns) == set(self.nodes()):
             raise ValueError("No variable missing in data. Nothing to predict")

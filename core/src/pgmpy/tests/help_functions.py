@@ -1,4 +1,4 @@
-from pgmpy.extern.six.moves import range
+from ..extern.six.moves import range
 
 
 def recursive_sorted(li):

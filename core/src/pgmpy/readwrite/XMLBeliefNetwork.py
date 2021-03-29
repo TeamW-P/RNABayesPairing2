@@ -12,9 +12,9 @@ except ImportError:
         # commented out as causing problem with dictionary attributes
         print("Failed to import ElementTree from any known place")
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.extern.six.moves import map, range
+from ..models import BayesianModel
+from ..factors.discrete import TabularCPD
+from ..extern.six.moves import map, range
 
 
 class XBNReader(object):

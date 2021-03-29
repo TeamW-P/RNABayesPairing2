@@ -3,7 +3,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from src.pgmpy.estimators import BaseEstimator
+from ...estimators import BaseEstimator
 
 
 class TestBaseEstimator(unittest.TestCase):

@@ -4,8 +4,8 @@
 import unittest
 import warnings
 
-from pgmpy.readwrite import PomdpXReader, PomdpXWriter
-from pgmpy.extern import six
+from ...readwrite import PomdpXReader, PomdpXWriter
+from ...extern import six
 
 try:
     from lxml import etree

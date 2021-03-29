@@ -122,10 +122,10 @@ except ImportError:
 import networkx as nx
 import numpy as np
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import map
+from ..models import BayesianModel
+from ..factors.discrete import TabularCPD
+from ..extern import six
+from ..extern.six.moves import map
 
 # warnings.warn("Not Complete. Please use only for "
 #               "reading and writing Bayesian Models.")

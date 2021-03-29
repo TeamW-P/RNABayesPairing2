@@ -6,9 +6,9 @@ import numpy as np
 from pandas import DataFrame
 
 from mock import patch, call
-from src.pgmpy.factors.discrete import State
-from pgmpy.models import MarkovChain as MC
-from pgmpy.extern.six.moves import range, zip
+from ...factors.discrete import State
+from ...models import MarkovChain as MC
+from ...extern.six.moves import range, zip
 
 
 class TestMarkovChain(unittest.TestCase):

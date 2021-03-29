@@ -3,8 +3,8 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from src.pgmpy.estimators import HillClimbSearch, K2Score
-from pgmpy.models import BayesianModel
+from ...estimators import HillClimbSearch, K2Score
+from ...models import BayesianModel
 
 
 class TestBaseEstimator(unittest.TestCase):

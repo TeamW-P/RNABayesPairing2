@@ -2,13 +2,13 @@ import unittest
 
 import numpy as np
 
-from src.pgmpy.factors.discrete import DiscreteFactor
-from pgmpy.models import FactorGraph
-from pgmpy.models import MarkovModel
-from pgmpy.models import JunctionTree
-from pgmpy.tests import help_functions as hf
-from pgmpy.extern import six
-from pgmpy.extern.six.moves import range
+from ...factors.discrete import DiscreteFactor
+from ...models import FactorGraph
+from ...models import MarkovModel
+from ...models import JunctionTree
+from .. import help_functions as hf
+from ...extern import six
+from ...extern.six.moves import range
 
 
 class TestFactorGraphCreation(unittest.TestCase):

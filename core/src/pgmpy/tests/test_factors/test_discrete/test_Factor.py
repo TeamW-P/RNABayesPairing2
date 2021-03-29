@@ -5,15 +5,15 @@ from collections import OrderedDict
 import numpy as np
 import numpy.testing as np_test
 
-from pgmpy.extern.six.moves import range
-from src.pgmpy.factors.discrete import DiscreteFactor
-from src.pgmpy.factors.discrete import JointProbabilityDistribution as JPD
-from src.pgmpy.factors.discrete import factor_divide
-from src.pgmpy.factors.discrete import factor_product
-from src.pgmpy.factors.discrete.CPD import TabularCPD
-from pgmpy.independencies import Independencies
-from pgmpy.models import BayesianModel
-from pgmpy.models import MarkovModel
+from ....extern.six.moves import range
+from ....factors.discrete import DiscreteFactor
+from ....factors.discrete import JointProbabilityDistribution as JPD
+from ....factors.discrete import factor_divide
+from ....factors.discrete import factor_product
+from ....factors.discrete.CPD import TabularCPD
+from ....independencies import Independencies
+from ....models import BayesianModel
+from ....models import MarkovModel
 
 
 class TestFactorInit(unittest.TestCase):

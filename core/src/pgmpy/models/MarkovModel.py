@@ -252,7 +252,7 @@ class MarkovModel(UndirectedGraph):
         >>> student.add_factors(factor1, factor2)
         >>> factor_graph = student.to_factor_graph()
         """
-        from pgmpy.models import FactorGraph
+        from . import FactorGraph
         factor_graph = FactorGraph()
 
         if not self.factors:
@@ -462,7 +462,7 @@ class MarkovModel(UndirectedGraph):
         >>> mm.add_factors(*phi)
         >>> junction_tree = mm.to_junction_tree()
         """
-        from pgmpy.models import JunctionTree
+        from . import JunctionTree
 
         # Check whether the model is valid or not
         self.check_model()
@@ -608,7 +608,7 @@ class MarkovModel(UndirectedGraph):
         >>> mm.add_factors(*phi)
         >>> bm = mm.to_bayesian_model()
         """
-        from pgmpy.models import BayesianModel
+        from . import BayesianModel
 
         bm = BayesianModel()
         var_clique_dict = defaultdict(tuple)

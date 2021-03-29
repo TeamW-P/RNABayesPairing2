@@ -2,8 +2,8 @@
 
 import unittest
 
-from src.pgmpy.base import UndirectedGraph
-from pgmpy.tests import help_functions as hf
+from ...base import UndirectedGraph
+from .. import help_functions as hf
 
 
 class TestUndirectedGraphCreation(unittest.TestCase):

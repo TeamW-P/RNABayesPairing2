@@ -2,8 +2,8 @@ import unittest
 
 import pandas as pd
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.estimators import BicScore
+from ...models import BayesianModel
+from ...estimators import BicScore
 
 
 class TestBicScore(unittest.TestCase):

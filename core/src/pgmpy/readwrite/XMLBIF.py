@@ -23,9 +23,9 @@ except ImportError:
 
 import numpy as np
 
-from pgmpy.models import BayesianModel
-from src.pgmpy.factors.discrete import TabularCPD
-from pgmpy.extern.six.moves import map
+from ..models import BayesianModel
+from ..factors.discrete import TabularCPD
+from ..extern.six.moves import map
 
 
 class XMLBIFReader(object):
