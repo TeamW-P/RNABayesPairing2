@@ -16,9 +16,11 @@ routes = Blueprint("routes", __name__)
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
 
+
 @routes.errorhandler(400)
 def resource_not_found(e):
     return jsonify(error=str(e)), 400
+
 
 @routes.route("/graphs", methods=["POST"])
 def get_graph_per_module():
@@ -30,16 +32,18 @@ def get_graph_per_module():
     :returns: a mapping of module IDs to their representative graphs.
     '''
     try:
-        dataset = request.form.get("dataset", default = chefs_assistant.DEFAULT_DATASET, type = str)
+        dataset = request.form.get(
+            "dataset", default=chefs_assistant.DEFAULT_DATASET, type=str)
         modules = request.form.get("modules")
-        include_pdb = request.form.get("pdb", default = 1, type = int)
+        include_pdb = request.form.get("pdb", default=1, type=int)
         if (not modules):
             raise Exception("Did not receive any modules to fetch graphs for.")
         modules = ast.literal_eval(modules)
         if (not modules):
             raise Exception("Received an empty list of modules.")
 
-        module_graph_mapping = chefs_assistant.retrieve_graphs(dataset, modules, include_pdb)
+        module_graph_mapping = chefs_assistant.retrieve_graphs(
+            dataset, modules, include_pdb)
 
         return jsonify({"graphs": module_graph_mapping})
     except ValueError as e:
