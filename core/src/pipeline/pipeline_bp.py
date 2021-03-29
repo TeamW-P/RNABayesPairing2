@@ -257,7 +257,7 @@ def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_
             print("FASTA file file with secondary structure detected, scanning", input)
         prediction_scores = {}
         sequences = []
-        with open(input, "rU") as f:
+        with open(input, "r") as f:
             lines = f.readlines()
             for line_n in range(0, len(lines), 3):
                 id = lines[line_n].strip(">").strip("\n")

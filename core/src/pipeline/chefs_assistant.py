@@ -40,18 +40,24 @@ def bayespairing(input, input_file_type=None, input_file=None):
             "secondary_structure", default="", type=str)
         secondary_structure_infile = input.get(
             "secondary_structure_infile", default=0, type=int)
+        is_alignment = input_file_type == "sl"
 
         # a secondary structure can be provided via a fasta file. This means a string cannot be provided, so verify that only one was received
-        # moreover, if a fasta file is provided, a secondary structure should not be provided via string
-        if (secondary_structure_infile and secondary_structure != ""):
+        # moreover, if a fasta file is provided, a secondary structure should not be provided via string. finally, a secondary structure cannot be provided
+        # with an alignment
+        if (secondary_structure_infile and secondary_structure):
             if (input_file):
                 input_file.close()
             raise Exception(
                 "Indicated that the secondary structure is provided in the fasta file, but also provided a separate structure.")
-        elif ((input_file_type == "fa" or input_file_type == "fasta") and secondary_structure != ""):
+        elif (input_file and secondary_structure):
             input_file.close()
             raise Exception(
-                "Received a secondary structure as a string, but a fasta file as a sequence. Please provide the single sequence as a string.")
+                "Received a secondary structure as a string, but the input provided was a file. Provide a secondary structure infile for fasta, or none with an alignment.")
+        elif (secondary_structure_infile and is_alignment):
+            input_file.close()
+            raise Exception(
+                "Selected that a secondary structure was provided in-file but provided a stockholm file (alignment).")
         elif (secondary_structure_infile):
             secondary_structure = "infile"
 
@@ -63,16 +69,19 @@ def bayespairing(input, input_file_type=None, input_file=None):
 
         score_threshold = input.get(
             "score_threshold", default=-2.3, type=float)
-        is_alignment = input_file_type == "sl"
 
         if (input.get("modules")):
             modules_to_check = [int(input_number)
                                 for input_number in ast.literal_eval(input.get("modules"))]
+            # check if modules list is empty
+            if (not modules_to_check):
+                raise Exception("Received an empty list of modules.")
         else:
             # we load the modules from the dataset to get the number of modules available.
             try:
                 with open(os.path.join(CURRENT_DIRECTORY, f"../../models/{dataset}.json")) as f:
                     modules = json.load(f)
+                f.close()
             except Exception as e:
                 raise Exception(
                     "Could not process dataset due to error: " + str(e))
@@ -110,15 +119,15 @@ def bayespairing(input, input_file_type=None, input_file=None):
                     with open(temp.name, "rb") as image_file:
                         image_file.seek(0)
                         svg = ((image_file.read()).decode("utf-8"))
+                    image_file.close()
                     #svg = ET.parse(temp.name).getroot()
                     #svg = ET.tostring(svg, encoding='unicode', method='xml')
-             
+
                 # destroy the temporarily stored svg
                 temp.close()
 
-            # TODO: SVG as XML
             output_dict = {"input": sequences, "params": input, "chefs_choice_struct": all_chef_ss,
-                           "all_hits": all_results, "svg_hits": all_svg_hits, "svg" : svg}
+                           "all_hits": all_results, "svg_hits": all_svg_hits, "svg": svg}
         else:  # if the input is an alignment, then no SVG
             output_dict = {"input": sequences, "params": input, "chefs_choice_struct": [
             ], "all_hits": all_results}
@@ -164,7 +173,11 @@ def retrieve_graphs(dataset, modules, include_pdb):
             "BayesPairing received an invalid dataset as an argument.")
     dataset_path = os.path.join(
         CURRENT_DIRECTORY, f"../../models/{dataset}.json")
-    dataset = json.load(open(dataset_path, "r"))
+
+    with open(dataset_path, "r") as f:
+        dataset = json.load(f)
+    f.close()
+
     module_graph_mapping = {}
 
     for module in modules:
