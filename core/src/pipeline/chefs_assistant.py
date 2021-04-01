@@ -9,6 +9,8 @@ import xml.etree.ElementTree as ET
 CURRENT_DIRECTORY = os.path.dirname(__file__)
 ALLOWED_EXTENSIONS = {"fa", "fasta", "sl"}
 ALLOWED_DATASETS = {"RELIABLE", "ALL"}
+# bp expects to return a list of params used. remove the ones not relevant (i.e. params used internally only)
+PARAMS_TO_REMOVE = ["get_graphs", "sequence", "pdb", "vernal", "rnamigos"]
 DEFAULT_DATASET = "ALL"
 VERBOSE = False
 
@@ -91,6 +93,11 @@ def bayespairing(input, input_file_type=None, input_file=None):
         sequences, all_results = bp.run_fasta(
             sequence, input, modules_to_check, dataset, is_alignment, score_threshold, secondary_structure, input_file_type, VERBOSE)
 
+        # remove params in dict that shoudn't be displayed to user in output
+        output_params = input.to_dict()
+        for key in PARAMS_TO_REMOVE:
+            output_params.pop(key, None)
+
         # if an alignment is not provided, we can generate an SVG
         # in the future, we may generate an SVG with an alignment but this is not possible right now
         if not is_alignment:
@@ -126,10 +133,10 @@ def bayespairing(input, input_file_type=None, input_file=None):
                 # destroy the temporarily stored svg
                 temp.close()
 
-            output_dict = {"input": sequences, "params": input, "chefs_choice_struct": all_chef_ss,
+            output_dict = {"input": sequences, "params": output_params, "chefs_choice_struct": all_chef_ss,
                            "all_hits": all_results, "svg_hits": all_svg_hits, "svg": svg}
         else:  # if the input is an alignment, then no SVG
-            output_dict = {"input": sequences, "params": input, "chefs_choice_struct": [
+            output_dict = {"input": sequences, "params": output_params, "chefs_choice_struct": [
             ], "all_hits": all_results}
 
         if (input_file):

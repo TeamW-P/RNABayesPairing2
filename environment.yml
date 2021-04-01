@@ -21,6 +21,7 @@ dependencies:
     - anytree
     - treedecomp
     - varnaapi
+    - pytest
   - viennarna=2.4.17
   - gunicorn=20.0.4
   - flask=1.1.2
