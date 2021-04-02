@@ -64,7 +64,7 @@ def bayespairing(input, input_file_type=None, input_file=None):
             secondary_structure = "infile"
 
         # a user can select from a locally stored dataset
-        dataset = input.get("dataset", default=DEFAULT_DATASET, type=str)
+        dataset = input.get("dataset", default=DEFAULT_DATASET, type=str).upper()
         if not (dataset in ALLOWED_DATASETS):
             raise Exception(
                 "BayesPairing received an invalid dataset as an argument.")
@@ -197,6 +197,33 @@ def retrieve_graphs(dataset, modules, include_pdb):
         module_graph_mapping[module] = graph_dict
 
     return module_graph_mapping
+
+
+def retrieve_module_info(dataset, modules):
+    '''
+    Retrieves information for a given list of modules.
+
+    :param dataset: the name of the dataset to use
+    :param modules: a list of modules (can also be a list containing a single module)
+    :returns: a dictionary containing information per module 
+    '''
+    if not (dataset in ALLOWED_DATASETS):
+        raise Exception(
+            "BayesPairing received an invalid dataset as an argument.")
+    dataset_path = os.path.join(
+        CURRENT_DIRECTORY, f"../../DBData/3DmotifAtlas/{dataset}_info.json")
+
+    with open(dataset_path, "r") as f:
+        dataset = json.load(f)
+    f.close()
+
+    module_info_mapping = {}
+
+    for module in modules:
+        module_info = dataset[str(module)]
+        module_info_mapping[module] = module_info
+
+    return module_info_mapping
 
 
 def allowed_file(filename):

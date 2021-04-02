@@ -22,12 +22,43 @@ def resource_not_found(e):
     return jsonify(error=str(e)), 400
 
 
+@routes.route("/module-info", methods=["GET"])
+def get_module_info():
+    '''
+    Retrieves information for a given list of modules.
+
+    :param dataset: the name of the dataset to use
+    :param modules: a list of modules (can also be a list containing a single module)
+    :returns: a dictionary containing information per module 
+    '''
+    try:
+        modules = request.args.get("modules")
+        dataset = request.args.get(
+            "dataset", default=chefs_assistant.DEFAULT_DATASET, type=str)
+        if (not modules):
+            raise Exception("Did not receive any modules to fetch graphs for.")
+        modules = ast.literal_eval(modules)
+        if (not modules):
+            raise Exception("Did not receive any modules to fetch graphs for.")
+
+        module_info = chefs_assistant.retrieve_module_info(
+            dataset.upper(), modules)
+
+        return jsonify(module_info)
+    except ValueError as e:
+        raise ValueError(
+            "Failed to process module IDs due to a type error: " + str(e))
+    except Exception as e:
+        abort(400, "Failed to retrieve module info: " + str(e))
+
+
 @routes.route("/graphs", methods=["POST"])
 def get_graph_per_module():
     '''
     Given a list of modules, or a single module, returns graphs for each from the default dataset.
 
-    This is a POST because of the possibility of uploading a dataset.
+    This is a POST for legacy reasons i.e. datasets the expectation at one point was that 
+    datasets could be uploaded manually however this is not the case.
 
     :returns: a mapping of module IDs to their representative graphs.
     '''
@@ -43,7 +74,7 @@ def get_graph_per_module():
             raise Exception("Received an empty list of modules.")
 
         module_graph_mapping = chefs_assistant.retrieve_graphs(
-            dataset, modules, include_pdb)
+            dataset.upper(), modules, include_pdb)
 
         return jsonify({"graphs": module_graph_mapping})
     except ValueError as e:
