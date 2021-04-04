@@ -31,7 +31,6 @@ class StringInputTests(unittest.TestCase):
             STRING_URL, content_type='multipart/form-data', headers=headers, data=payload)
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_STRING_NO_SS.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         self.assertEqual("motif_graphs" in expected_response,
@@ -49,7 +48,6 @@ class StringInputTests(unittest.TestCase):
             STRING_URL, content_type='multipart/form-data', headers=headers, data=payload)
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_STRING_WITH_SS.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         # BP results are NOT determnisitc, the best we can do is validate success (except for params & input)
@@ -68,7 +66,6 @@ class StringInputTests(unittest.TestCase):
             STRING_URL, content_type='multipart/form-data', headers=headers, data=payload)
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_STRING_CUSTOM_MODULES.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         # BP results are NOT determnisitc, the best we can do is validate success (except for params & input)
@@ -87,7 +84,6 @@ class StringInputTests(unittest.TestCase):
             STRING_URL, content_type='multipart/form-data', headers=headers, data=payload)
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_STRING_SEQUENCE_ONLY.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         # BP results are NOT determnisitc, the best we can do is validate success (except for params & input)

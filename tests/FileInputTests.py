@@ -30,14 +30,12 @@ class FileInputTest(unittest.TestCase):
         # simulate file upload
         with open(os.path.join(CURRENT_DIRECTORY, "data/INPUT_SEQUENCE.fa"), mode="rb") as f:
             payload["bp_input"] = (io.BytesIO(f.read()), "INPUT_SEQUENCE.fa")
-        f.close()
 
         response = self.app.post(
             FILE_URL, content_type='multipart/form-data', headers=headers, data=payload)
 
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_FILE_INPUT_SEQUENCE_NO_SECONDARY_STRUCTURE.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         self.assertEqual("svg" in expected_response, "svg" in response.json)
@@ -57,13 +55,11 @@ class FileInputTest(unittest.TestCase):
         with open(os.path.join(CURRENT_DIRECTORY, "data/INPUT_SEQUENCE_SS.fa"), mode="rb") as f:
             payload["bp_input"] = (io.BytesIO(f.read()),
                                    "INPUT_SEQUENCE_SS.fa")
-        f.close()
 
         response = self.app.post(
             FILE_URL, content_type='multipart/form-data', headers=headers, data=payload)
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_FILE_INPUT_SEQUENCE_SS_INFILE.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         # BP results are NOT determnisitc, the best we can do is validate success (except for params & input)
@@ -84,13 +80,11 @@ class FileInputTest(unittest.TestCase):
         # simulate file upload
         with open(os.path.join(CURRENT_DIRECTORY, "data/INPUT_SEQUENCE.fa"), mode="rb") as f:
             payload["bp_input"] = (io.BytesIO(f.read()), "INPUT_SEQUENCE.fa")
-        f.close()
 
         response = self.app.post(
             FILE_URL, content_type='multipart/form-data', headers=headers, data=payload)
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_FILE_INPUT_SEQUENCE_CUSTOM_MODULES.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         # BP results are NOT determnisitc, the best we can do is validate success (except for params & input)
@@ -114,13 +108,11 @@ class FileInputTest(unittest.TestCase):
         # TODO: add stockholm
         with open(os.path.join(CURRENT_DIRECTORY, "data/INPUT_SEQUENCE.fa"), mode="rb") as f:
             payload["bp_input"] = (io.BytesIO(f.read()), "INPUT_SEQUENCE.fa")
-        f.close()
 
         response = self.app.post(
             FILE_URL, content_type='multipart/form-data', headers=headers, data=payload)
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_FILE_INPUT_ALIGNMENT.json")) as f:
             expected_response = json.load(f)
-        f.close()
 
         self.assertEqual(200, response.status_code)
         # BP results are NOT determnisitc, the best we can do is validate success (except for params & input)
@@ -143,7 +135,6 @@ class FileInputTest(unittest.TestCase):
 
         with open(os.path.join(CURRENT_DIRECTORY, "data/ILLEGAL_FORMAT.txt"), mode="rb") as f:
             payload["bp_input"] = (io.BytesIO(f.read()), "ILLEGAL_FORMAT.txt")
-        f.close()
 
         response = self.app.post(
             FILE_URL, content_type='multipart/form-data', headers=headers, data=payload)
@@ -160,7 +151,6 @@ class FileInputTest(unittest.TestCase):
 
         with open(os.path.join(CURRENT_DIRECTORY, "data/INVALID_FASTA.fa"), mode="rb") as f:
             payload["bp_input"] = (io.BytesIO(f.read()), "INVALID_FASTA.fa")
-        f.close()
 
         response = self.app.post(
             FILE_URL, content_type='multipart/form-data', headers=headers, data=payload)
@@ -191,7 +181,6 @@ class FileInputTest(unittest.TestCase):
         # TODO, add stockholm
         with open(os.path.join(CURRENT_DIRECTORY, "data/INVALID_FASTA.fa"), mode="rb") as f:
             payload["bp_input"] = (io.BytesIO(f.read()), "INVALID_FASTA.fa")
-        f.close()
 
         response = self.app.post(
             FILE_URL, content_type='multipart/form-data', headers=headers, data=payload)

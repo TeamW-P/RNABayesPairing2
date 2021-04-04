@@ -27,7 +27,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_URL}?{MODULE_INFO_DATASET_KEY}=ALL&{MODULE_INFO_MODULES_KEY}=[\"36\", \"48\"]"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ALL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_VALID_MODULES}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
@@ -45,7 +45,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_URL}?{MODULE_INFO_DATASET_KEY}=ALL&{MODULE_INFO_MODULES_KEY}=[]"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ALL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_EMPTY_MODULE}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
@@ -58,7 +58,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_URL}?{MODULE_INFO_DATASET_KEY}=ILLEGAL&{MODULE_INFO_MODULES_KEY}=[\"36\", \"48\"]"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ILLEGAL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_VALID_MODULES}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
@@ -71,7 +71,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_URL}?{MODULE_INFO_DATASET_KEY}=ALL&{MODULE_INFO_MODULES_KEY}=[\"36\", \"1000\"]"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ALL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_INVALID_MODULES}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
@@ -86,6 +86,6 @@ class ModuleInfoRetrieval(unittest.TestCase):
         headers = {}
 
         response = self.app.get(
-            MODULE_INFO_URL, headers=headers, data=payload)
+            MODULE_INFO_RETRIEVAL_URL, headers=headers, data=payload)
 
         self.assertEqual(400, response.status_code)

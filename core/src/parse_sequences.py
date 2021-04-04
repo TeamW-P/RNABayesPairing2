@@ -25,7 +25,8 @@ def unpick(dataset,direc,typ):
         print("Dataset found!", file=sys.stderr)
         while True:
             try:
-                nets = pickle.load(open(file_path, "rb"))
+                with open(file_path, "rb") as f:
+                    nets = pickle.load(f)
                 break
             except:
                 pass
@@ -50,7 +51,8 @@ def run_BP(seq, ss, modules_to_parse, dataset, left_out, aln=False, t=-5, sample
             nets = collections.OrderedDict()
         #print("SETTING UP BAYES NET")
         BNs = BayesPairing.setup_BN(modules_to_parse, nets, dataset, left_out,leave_out_sequence=leave_out_sequence,left_out_sequence=left_out_sequence, Lambda=Lambda,Theta=Theta, verbose=verbose,indexes=indexes)
-        pickle.dump(BNs,open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + "_models.pickle"), "wb"))
+        with open(os.path.join(CURRENT_DIRECTORY, "../models/" + dataset + "_models.pickle"), "wb") as f:
+            pickle.dump(BNs,f)
     else:
         #nets = pickle.load(open("../models/" + dataset + "_models.pickle", "rb"))
         nets = unpick(dataset,"models","models.pickle")

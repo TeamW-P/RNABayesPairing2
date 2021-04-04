@@ -48,23 +48,20 @@ def bayespairing(input, input_file_type=None, input_file=None):
         # moreover, if a fasta file is provided, a secondary structure should not be provided via string. finally, a secondary structure cannot be provided
         # with an alignment
         if (secondary_structure_infile and secondary_structure):
-            if (input_file):
-                input_file.close()
             raise Exception(
                 "Indicated that the secondary structure is provided in the fasta file, but also provided a separate structure.")
         elif (input_file and secondary_structure):
-            input_file.close()
             raise Exception(
                 "Received a secondary structure as a string, but the input provided was a file. Provide a secondary structure infile for fasta, or none with an alignment.")
         elif (secondary_structure_infile and is_alignment):
-            input_file.close()
             raise Exception(
                 "Selected that a secondary structure was provided in-file but provided a stockholm file (alignment).")
         elif (secondary_structure_infile):
             secondary_structure = "infile"
 
         # a user can select from a locally stored dataset
-        dataset = input.get("dataset", default=DEFAULT_DATASET, type=str).upper()
+        dataset = input.get(
+            "dataset", default=DEFAULT_DATASET, type=str).upper()
         if not (dataset in ALLOWED_DATASETS):
             raise Exception(
                 "BayesPairing received an invalid dataset as an argument.")
@@ -83,7 +80,6 @@ def bayespairing(input, input_file_type=None, input_file=None):
             try:
                 with open(os.path.join(CURRENT_DIRECTORY, f"../../models/{dataset}.json")) as f:
                     modules = json.load(f)
-                f.close()
             except Exception as e:
                 raise Exception(
                     "Could not process dataset due to error: " + str(e))
@@ -126,7 +122,6 @@ def bayespairing(input, input_file_type=None, input_file=None):
                     with open(temp.name, "rb") as image_file:
                         image_file.seek(0)
                         svg = ((image_file.read()).decode("utf-8"))
-                    image_file.close()
                     #svg = ET.parse(temp.name).getroot()
                     #svg = ET.tostring(svg, encoding='unicode', method='xml')
 
@@ -139,8 +134,6 @@ def bayespairing(input, input_file_type=None, input_file=None):
             output_dict = {"input": sequences, "params": output_params, "chefs_choice_struct": [
             ], "all_hits": all_results}
 
-        if (input_file):
-            input_file.close()
         if not output_dict:
             raise Exception(
                 "BayesPairing failed to produce output. Please ensure sure all input variables are valid. If a fasta or stockholm file were provided, they were preserved.")
@@ -157,12 +150,8 @@ def bayespairing(input, input_file_type=None, input_file=None):
 
         return output_dict
     except ValueError as e:
-        if (input_file):
-            input_file.close()
         raise Exception("Received an invalid argument: " + str(e))
     except Exception as e:
-        if (input_file):
-            input_file.close()
         raise Exception("BayesPairing failed to produce a result: " + str(e))
 
 
@@ -183,7 +172,6 @@ def retrieve_graphs(dataset, modules, include_pdb):
 
     with open(dataset_path, "r") as f:
         dataset = json.load(f)
-    f.close()
 
     module_graph_mapping = {}
 
@@ -215,7 +203,6 @@ def retrieve_module_info(dataset, modules):
 
     with open(dataset_path, "r") as f:
         dataset = json.load(f)
-    f.close()
 
     module_info_mapping = {}
 
