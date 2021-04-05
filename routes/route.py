@@ -68,6 +68,9 @@ def bayespairing_file():
                 temp.write(file.read())
                 temp.seek(0)
 
+                if (len(file.filename.rsplit(".")) > 2):
+                    raise Exception("Received a file with multiple extensions")
+
                 result = chefs_assistant.bayespairing(
                     request.form, file.filename.rsplit(".")[1], temp)
             return jsonify(result)

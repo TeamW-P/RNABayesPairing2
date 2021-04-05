@@ -4,14 +4,10 @@ import base64
 import ast
 from . import pipeline_bp as bp
 from . import pipeline_chefschoice as chefs_choice
+from .constants import *
 import xml.etree.ElementTree as ET
 
 CURRENT_DIRECTORY = os.path.dirname(__file__)
-ALLOWED_EXTENSIONS = {"fa", "fasta", "sl"}
-ALLOWED_DATASETS = {"RELIABLE", "ALL"}
-# bp expects to return a list of params used. remove the ones not relevant (i.e. params used internally only)
-PARAMS_TO_REMOVE = ["get_graphs", "sequence", "pdb", "vernal", "rnamigos"]
-DEFAULT_DATASET = "ALL"
 VERBOSE = False
 
 
@@ -28,6 +24,7 @@ def bayespairing(input, input_file_type=None, input_file=None):
         # this primarily exits for use in pipelining data to VeRNAl & RNAMigos to avoid additional calls to the server
         get_graphs = input.get("get_graphs", default=0, type=int)
         sequence = input.get("sequence", type=str)
+        is_alignment = input.get("aln", default=0, type=int) or input_file_type in STOCKHOLM_EXTENSIONS
 
         if (not sequence and not input_file):
             raise Exception(
@@ -42,7 +39,6 @@ def bayespairing(input, input_file_type=None, input_file=None):
             "secondary_structure", default="", type=str)
         secondary_structure_infile = input.get(
             "secondary_structure_infile", default=0, type=int)
-        is_alignment = input_file_type == "sl"
 
         # a secondary structure can be provided via a fasta file. This means a string cannot be provided, so verify that only one was received
         # moreover, if a fasta file is provided, a secondary structure should not be provided via string. finally, a secondary structure cannot be provided

@@ -4,6 +4,7 @@ from multiprocessing import Process, Manager
 from .. import testSS
 from .. import BayesPairing
 from ..parse_sequences import unpick, run_BP, process_siblings, parse_sequences, check_already_there, seq_ranges
+from .constants import *
 import random
 from Bio import SeqIO
 import argparse
@@ -53,7 +54,7 @@ def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_
     interm = False
     first_run = False
 
-    if input_file_type == "st":
+    if input_file_type in STOCKHOLM_EXTENSIONS:
         if verbose:
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
@@ -124,7 +125,7 @@ def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_
                 # all_maxes.append(maxs)
                 all_maxes = parse_sequences.aggregate(maxs, all_maxes)
                 prediction_scores[id] = all_maxes
-    elif (input_file_type == "fa" or input_file_type == "fasta") and aln:
+    elif (input_file_type in FASTA_EXTENSIONS) and aln:
         if verbose:
             print("Alignment file detected, scanning alignment", input)
         prediction_scores = {}
@@ -197,7 +198,7 @@ def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_
                 all_maxes = parse_sequences.aggregate(maxs, all_maxes)
                 prediction_scores[id] = all_maxes
 
-    elif (input_file_type == "fa" or input_file_type == "fasta") and ss == "":
+    elif (input_file_type in FASTA_EXTENSIONS) and ss == "":
         if verbose:
             print("FASTA file detected, scanning", input)
         prediction_scores = {}
@@ -252,7 +253,7 @@ def run_fasta(input, arguments, modules_to_parse, dataset, aln, t, ss="", input_
                     all_maxes = parse_sequences.aggregate(maxs, all_maxes)
                     prediction_scores[id] = all_maxes
 
-    elif (input_file_type == "fa" or input_file_type == "fasta") and ss == "infile":
+    elif (input_file_type in FASTA_EXTENSIONS) and ss == "infile":
         if verbose:
             print("FASTA file file with secondary structure detected, scanning", input)
         prediction_scores = {}
