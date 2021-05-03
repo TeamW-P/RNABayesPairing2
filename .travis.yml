@@ -4,6 +4,12 @@ python:
 # sets up anaconda
 before_install:
  - wget https://repo.anaconda.com/archive/Anaconda3-5.3.1-Linux-x86_64.sh
+ - bash Anaconda3-5.3.1-Linux-x86_64.sh
+ - cd ~
+ - source .bashrc
+ # set to always say yes to conda commands
+ - conda config --set always_yes yes --set changeps1 no
+ - conda update -q conda
 install:
  - conda env create -f environment. yml
  - conda activate bayespairing
