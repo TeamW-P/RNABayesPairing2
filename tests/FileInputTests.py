@@ -37,8 +37,9 @@ class FileInputTest(unittest.TestCase):
 
         with open(os.path.join(CURRENT_DIRECTORY, "responses/RESPONSE_FILE_INPUT_SEQUENCE_NO_SECONDARY_STRUCTURE.json")) as f:
             expected_response = json.load(f)
-
-        self.assertEqual(200, response.status_code)
+        
+        # simulated error
+        self.assertEqual(400, response.status_code)
         self.assertEqual("svg" in expected_response, "svg" in response.json)
         self.assertEqual("svg_hits" in expected_response,
                          "svg_hits" in response.json)
