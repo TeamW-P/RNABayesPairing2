@@ -1,0 +1,14 @@
+language: python
+python:
+ - "3.7"
+# sets up anaconda
+before_install:
+ - wget https://repo.anaconda.com/archive/Anaconda3-5.3.1-Linux-x86_64.sh
+install:
+ - conda env create -f environment. yml
+ - conda activate bayespairing
+script:
+ - python -m unittest tests.FileInputTests
+ - python -m unittest tests.StringInputTests
+ - python -m unittest tests.GraphRetrievalTests
+ - python -m unittest tests.ModuleInfoRetrievalTests
