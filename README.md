@@ -2,6 +2,8 @@
 
 ## This is a fork of BayesPairing 2 to be used within the context of a larger Bioionformatics pipeline. For info on BayesPairing, please click [here](https://jwgitlab.cs.mcgill.ca/sarrazin/rnabayespairing2/).
 
+[![Build Status](https://travis-ci.com/TeamW-P/RNABayesPairing2.svg?branch=main)](https://travis-ci.com/TeamW-P/RNABayesPairing2)
+
 ## Major Changes
 Changes to the official branch of BayesPairing (continually updated)
 
@@ -16,6 +18,7 @@ Changes to the official branch of BayesPairing (continually updated)
   * pipeline_chefschoice: A modification of key methods from chefs_choice that handle SVG generation
   * chefs_assistant: a new class that handles virtually all heavy lifting and processing of the BP service
 * Testing! Located within the tests directory! Because BP results are non-deterministic, these mainly validate that results are successful or a failure and whether keys exist, not the exact contents of a specific result.
+* TravisCI will automatically run tests after each commit
 
 The command line program remains functional, but must now be run from the root directory instead of src. Here is a sample run: 
 
