@@ -25,11 +25,12 @@ class GraphRetrievalTests(unittest.TestCase):
         '''
         Tests for a successful run of graph retrieval with PDBs included in output.
         '''
-        payload = GRAPH_RETRIEVAL_PDB
+        payload = {}
         headers = {}
+        url = f"{GRAPH_RETRIEVAL_URL}?{GRAPH_RETRIEVAL_DATASET_KEY}={ALL_DATASET_NAME}&{GRAPH_RETRIEVAL_MODULES_KEY}={GRAPH_RETRIEVAL_VALID_MODULES}&{GRAPH_RETRIEVAL_PDB_KEY}={GRAPH_RETRIEVAL_INCLUDE_PDB}"
 
-        response = self.app.post(
-            GRAPHS_URL, content_type='multipart/form-data', headers=headers, data=payload)
+        response = self.app.get(
+            url, headers=headers, data=payload)
 
         with open(os.path.join(CURRENT_DIRECTORY, "responses/GRAPH_RETRIEVAL_SUCCESS_PDB.json")) as f:
             expected_response = json.load(f)
@@ -42,11 +43,12 @@ class GraphRetrievalTests(unittest.TestCase):
         '''
         Tests for a successful run of graph retrieval where no PDBs are included in output.
         '''
-        payload = GRAPH_RETRIEVAL_NO_PDB
+        payload = {}
         headers = {}
+        url = f"{GRAPH_RETRIEVAL_URL}?{GRAPH_RETRIEVAL_DATASET_KEY}={ALL_DATASET_NAME}&{GRAPH_RETRIEVAL_MODULES_KEY}={GRAPH_RETRIEVAL_VALID_MODULES}&{GRAPH_RETRIEVAL_PDB_KEY}={GRAPH_RETRIEVAL_NO_PDB}"
 
-        response = self.app.post(
-            GRAPHS_URL, content_type='multipart/form-data', headers=headers, data=payload)
+        response = self.app.get(
+            url, headers=headers, data=payload)
 
         with open(os.path.join(CURRENT_DIRECTORY, "responses/GRAPH_RETRIEVAL_SUCCESS_NO_PDB.json")) as f:
             expected_response = json.load(f)
@@ -59,11 +61,12 @@ class GraphRetrievalTests(unittest.TestCase):
         '''
         Tests for a failure run of graph retrieval where an empty list of modules is provided.
         '''
-        payload = GRAPH_RETRIEVAL_EMPTY_MODULES
+        payload = {}
         headers = {}
+        url = f"{GRAPH_RETRIEVAL_URL}?{GRAPH_RETRIEVAL_DATASET_KEY}={ALL_DATASET_NAME}&{GRAPH_RETRIEVAL_MODULES_KEY}={GRAPH_RETRIEVAL_EMPTY_MODULE}&{GRAPH_RETRIEVAL_PDB_KEY}={GRAPH_RETRIEVAL_INCLUDE_PDB}"
 
-        response = self.app.post(
-            GRAPHS_URL, content_type='multipart/form-data', headers=headers, data=payload)
+        response = self.app.get(
+            url, headers=headers, data=payload)
 
         self.assertEqual(400, response.status_code)
 
@@ -71,11 +74,12 @@ class GraphRetrievalTests(unittest.TestCase):
         '''
         Tests for a failure run of graph retrieval where an invalid dataset is provided.
         '''
-        payload = GRAPH_RETRIEVAL_BAD_DATASET
+        payload = {}
         headers = {}
+        url = f"{GRAPH_RETRIEVAL_URL}?{GRAPH_RETRIEVAL_DATASET_KEY}={ILLEGAL_DATASET_NAME}&{GRAPH_RETRIEVAL_MODULES_KEY}={GRAPH_RETRIEVAL_VALID_MODULES}&{GRAPH_RETRIEVAL_PDB_KEY}={GRAPH_RETRIEVAL_INCLUDE_PDB}"
 
-        response = self.app.post(
-            GRAPHS_URL, content_type='multipart/form-data', headers=headers, data=payload)
+        response = self.app.get(
+            url, headers=headers, data=payload)
 
         self.assertEqual(400, response.status_code)
 
@@ -83,11 +87,12 @@ class GraphRetrievalTests(unittest.TestCase):
         '''
         Tests for a failure run of graph retrieval where an invalid module is provided.
         '''
-        payload = GRAPH_RETRIEVAL_INVALID_MODULE
+        payload = {}
         headers = {}
+        url = f"{GRAPH_RETRIEVAL_URL}?{GRAPH_RETRIEVAL_DATASET_KEY}={ALL_DATASET_NAME}&{GRAPH_RETRIEVAL_MODULES_KEY}={GRAPH_RETRIEVAL_INVALID_MODULE}&{GRAPH_RETRIEVAL_PDB_KEY}={GRAPH_RETRIEVAL_INCLUDE_PDB}"
 
-        response = self.app.post(
-            GRAPHS_URL, content_type='multipart/form-data', headers=headers, data=payload)
+        response = self.app.get(
+            url, headers=headers, data=payload)
 
         self.assertEqual(400, response.status_code)
 
@@ -98,7 +103,7 @@ class GraphRetrievalTests(unittest.TestCase):
         payload = {}
         headers = {}
 
-        response = self.app.post(
-            GRAPHS_URL, content_type='multipart/form-data', headers=headers, data=payload)
+        response = self.app.get(
+            GRAPH_RETRIEVAL_URL, headers=headers, data=payload)
 
         self.assertEqual(400, response.status_code)

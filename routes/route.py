@@ -80,21 +80,18 @@ def bayespairing_file():
     abort(400, description="BayesPairing failed for an unknown reason. Please check your inputs.")
 
 
-@routes.route("/graphs", methods=["POST"])
+@routes.route("/graphs", methods=["GET"])
 def get_graph_per_module():
     '''
     Given a list of modules, or a single module, returns graphs for each from the default dataset.
 
-    This is a POST for legacy reasons i.e. datasets the expectation at one point was that 
-    datasets could be uploaded manually however this is not the case.
-
     :returns: a mapping of module IDs to their representative graphs.
     '''
     try:
-        dataset = request.form.get(
+        dataset = request.args.get(
             "dataset", default=chefs_assistant.DEFAULT_DATASET, type=str)
-        modules = request.form.get("modules")
-        include_pdb = request.form.get("pdb", default=1, type=int)
+        modules = request.args.get("modules")
+        include_pdb = request.args.get("pdb", default=1, type=int)
         if (not modules):
             raise Exception("Did not receive any modules to fetch graphs for.")
         modules = ast.literal_eval(modules)

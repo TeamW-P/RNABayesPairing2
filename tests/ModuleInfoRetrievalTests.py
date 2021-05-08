@@ -27,7 +27,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ALL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_VALID_MODULES}"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={ALL_DATASET_NAME}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_VALID_MODULES}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
@@ -45,7 +45,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ALL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_EMPTY_MODULE}"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={ALL_DATASET_NAME}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_EMPTY_MODULE}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
@@ -58,7 +58,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ILLEGAL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_VALID_MODULES}"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={ILLEGAL_DATASET_NAME}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_VALID_MODULES}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
@@ -71,7 +71,7 @@ class ModuleInfoRetrieval(unittest.TestCase):
         '''
         payload = {}
         headers = {}
-        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={MODULE_INFO_RETRIEVAL_ALL_DATASET}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_INVALID_MODULES}"
+        url = f"{MODULE_INFO_RETRIEVAL_URL}?{MODULE_INFO_RETRIEVAL_DATASET_KEY}={ALL_DATASET_NAME}&{MODULE_INFO_RETRIEVAL_MODULES_KEY}={MODULE_INFO_RETRIEVAL_INVALID_MODULES}"
 
         response = self.app.get(
             url, headers=headers, data=payload)
